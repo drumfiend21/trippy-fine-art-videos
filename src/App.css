@@ -36,3 +36,34 @@
     transform: rotate(360deg);
   }
 }
+
+.fadein img {
+  position:absolute;
+  top:0;
+  -webkit-animation-name: fade;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-duration: 6s;
+  animation-name: fade;
+  animation-iteration-count: infinite;
+  animation-duration: 6s;
+}
+
+@-webkit-keyframes fade {
+  0% {opacity: 0;}
+  20% {opacity: 1;}
+  33% {opacity: 1;}
+  53% {opacity: 0;}
+  100% {opacity: 0;}
+}
+@keyframes fade {
+  0% {opacity: 0;}
+  20% {opacity: 1;}
+  33% {opacity: 1;}
+  53% {opacity: 0;}
+  100% {opacity: 0;}
+}
+
+.formControl {
+  margin: 0 auto;
+  width: 300px;
+}
