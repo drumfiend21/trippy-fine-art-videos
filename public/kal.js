@@ -1,16 +1,18 @@
-$( document ).ready( function () {
+// $( document ).ready( function () {
 
     var parameters = ( function ( src ) {
-      var params = {}, qryStr = src.split( '?' )[ 1 ];
-      if( qryStr ) {
-        $.each( qryStr.split( '&' ), function ( i, p ) {
-          var ps = p.replace( /\/$/, '' ).split( '=' );
-          var k = ps[ 0 ].replace( /^\?/, '' );
-          params[ k ] = ps[ 1 ] || true;
-        });
-      }
+      var params = {}; //qryStr = src.split( '?' )[ 1 ];
+    //   if( qryStr ) {
+    //     $.each( qryStr.split( '&' ), function ( i, p ) {
+    //       var ps = p.replace( /\/$/, '' ).split( '=' );
+    //       var k = ps[ 0 ].replace( /^\?/, '' );
+    //       params[ k ] = ps[ 1 ] || true;
+    //     });
+    //   }
+      params.src = 'https://mraffaele.com/wp-content/uploads/2013/07/kaleidoscope.jpg'
       return params;
-    })( location.search );
+    // })( location.search );
+    })();
   
     var x = 0;
     var y = 0;
@@ -24,7 +26,7 @@ $( document ).ready( function () {
     var s = parameters.s || 3;
   
     // PARAMETER: *n* is the number of segments.
-    var n = ~~parameters.n || 7;
+    var n = ~~parameters.n || 3;
     var tiles = '';
     if ( n ) {
       for ( var i = 0; i <= n * 2; i++ ) {
@@ -38,7 +40,7 @@ $( document ).ready( function () {
   
     var $image = $kaleidescope.find( '.image' );
   
-    var $fullscreen = $( '#fullscreen' );
+    // var $fullscreen = $( '#fullscreen' );
     var k = $kaleidescope[ 0 ];
   
     // PARAMETER: *src* is the URL for an alternate image.
@@ -48,10 +50,10 @@ $( document ).ready( function () {
     }
   
     // PARAMETER: *clean* hides the Github and fullscreen links.
-    var clean = parameters.clean;
-    if ( clean ) {
-      $( 'body' ).addClass('clean');
-    }
+    // var clean = parameters.clean;
+    // if ( clean ) {
+    //   $( 'body' ).addClass('clean');
+    // }
   
     // PARAMETER: *opacity* sets opacity (0.0 -> 1.0).
     var opacity = parseFloat( parameters.opacity );
@@ -61,75 +63,75 @@ $( document ).ready( function () {
   
   
     // PARAMETER (undocumented): *mode* changes the animation style.
-    var mode = ~~parameters.mode || 2;
+    var mode = ~~parameters.mode || 1;
   
     // Project changes in cursor (x, y) onto the image background position.
-    $kaleidescope.mousemove( function ( e ) {
-      x++;
-      y++;
+    // $kaleidescope.mousemove( function ( e ) {
+    //   x++;
+    //   y++;
   
-      var nx = e.pageX, ny = e.pageY;
-      switch ( mode ) {
-        case 1:
-          nx = -x;
-          ny = e.pageY;
-          break;
-        case 2:
-          nx = e.pageX;
-          ny = -y;
-          break;
-        case 3:
-          nx = x;
-          ny = e.pageY;
-          break;
-        case 4:
-          nx = e.pageX;
-          ny = y;
-          break;
-        case 5:
-          nx = x;
-          ny = y;
-          break;
-      }
+    //   var nx = e.pageX, ny = e.pageY;
+    //   switch ( mode ) {
+    //     case 1:
+    //       nx = -x;
+    //       ny = e.pageY;
+    //       break;
+    //     case 2:
+    //       nx = e.pageX;
+    //       ny = -y;
+    //       break;
+    //     case 3:
+    //       nx = x;
+    //       ny = e.pageY;
+    //       break;
+    //     case 4:
+    //       nx = e.pageX;
+    //       ny = y;
+    //       break;
+    //     case 5:
+    //       nx = x;
+    //       ny = y;
+    //       break;
+    //   }
   
-      move( nx, ny );
-      auto = auto_throttle = false;
-    });
+    //   move( nx, ny );
+    //   auto = auto_throttle = false;
+    // });
     
     // An alternate image can be supplied via Dragon Drop.
-    if ( 'draggable' in document.createElement('b') && window.FileReader ) {
-      k.ondragenter = k.ondragover = function( e ) {
-        e.preventDefault();
-      };
+    // if ( 'draggable' in document.createElement('b') && window.FileReader ) {
+    //   k.ondragenter = k.ondragover = function( e ) {
+    //     e.preventDefault();
+    //   };
     
-      k.ondrop = function( e ) {
-        readFile( e.dataTransfer.files[0] );
-        e.preventDefault();
-      };
-    }
+    //   k.ondrop = function( e ) {
+    //     readFile( e.dataTransfer.files[0] );
+    //     e.preventDefault();
+    //   };
+    // }
     
-    function readFile( file ) {
-      var r = new FileReader();
-      if ( !file.type.match('image\/.*') ) {
-        return false;
-      }
+    // function readFile( file ) {
+    //   var r = new FileReader();
+    //   if ( !file.type.match('image\/.*') ) {
+    //     return false;
+    //   }
       
-      r.onload = function( e ) {
-        $image.css( 'background-image', [ 'url(', e.target.result, ')' ].join( '' ) );
-      };
+    //   r.onload = function( e ) {
+    //     $image.css( 'background-image', [ 'url(', e.target.result, ')' ].join( '' ) );
+    //   };
       
-      r.readAsDataURL( file );
-    } 
+    //   r.readAsDataURL( file );
+    // } 
   
     // Request Fullscreen for maximum LSD effect
-    $fullscreen.click( function() {
-      if ( document.fullscreenEnabled || document.mozFullScreenEnabled || 
-          document.webkitFullscreenEnabled ) {
-        if ( k.requestFullscreen )       k.requestFullscreen();
-        if ( k.mozRequestFullScreen )    k.mozRequestFullScreen();
-        if ( k.webkitRequestFullscreen ) k.webkitRequestFullscreen();
-      }
-    });
+    // $fullscreen.click( function() {
+    //   if ( document.fullscreenEnabled || document.mozFullScreenEnabled || 
+    //       document.webkitFullscreenEnabled ) {
+    //     if ( k.requestFullscreen )       k.requestFullscreen();
+    //     if ( k.mozRequestFullScreen )    k.mozRequestFullScreen();
+    //     if ( k.webkitRequestFullscreen ) k.webkitRequestFullscreen();
+    //   }
+    // });
   
     // Animate all the things!
     window.requestAnimFrame = ( function( window ) {
@@ -170,4 +172,4 @@ $( document ).ready( function () {
           }
         }, 5000 );
     })();
-  });
+//   });

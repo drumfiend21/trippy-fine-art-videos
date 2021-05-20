@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import './App.css'
+import './kal.css'
 
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
@@ -46,29 +47,31 @@ function App() {
   const [imagesTotal, setImagesTotal] = useState(0)
   const [queryError, setQueryError] = useState(false)
 
-  const [imageCount, setImageCount] = useState(0)
+  const [imageCount, setImageCount] = useState(-1)
   const [isRunning, setIsRunning] = useState(false)
 
   useEffect(() => {
-    const script = document.createElement('script');
+    if (step === 4) {
+      const script = document.createElement('script');
   
-    script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
-    script.async = true;
-  
-    document.body.appendChild(script);
+      script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
+      script.async = true;
+    
+      document.body.appendChild(script);
 
-    const scriptTwo = document.createElement('script');
-  
-    scriptTwo.src = "kal.js";
-    scriptTwo.async = true;
-  
-    document.body.appendChild(scriptTwo);
-  
-    return () => {
-      document.body.removeChild(script);
-      document.body.removeChild(scriptTwo);
+      const scriptTwo = document.createElement('script');
+    
+      scriptTwo.src = "kal.js";
+      scriptTwo.async = true;
+    
+      document.body.appendChild(scriptTwo);
     }
-  }, []);
+  
+    // return () => {
+    //   document.body.removeChild(script);
+    //   document.body.removeChild(scriptTwo);
+    // }
+  }, [step]);
 
   useInterval(() => {
     // Your custom logic here
@@ -127,6 +130,11 @@ function App() {
     if (newCount % 5 === 0 && newCount < imagesTotal) {
       //fetch next batch
       getBatchImages(newCount+5)
+    }
+    var imageElements = document.getElementsByClassName("image")
+    console.log(imageElements)
+    for (var i = 0; i < imageElements.length; i++) {
+      imageElements[i].style.backgroundImage = [ 'url(', decodeURIComponent( images[newCount] ), ')' ].join( '' );
     }
   }
 
@@ -208,8 +216,9 @@ function App() {
       }
       { step === 4 &&
         <div className="imageBox">
-          <p>{images[imageCount]}</p>
-          <img src={images[imageCount]} className='image'/>
+          {/* <p>{images[imageCount]}</p>
+          <img src={images[imageCount]} className='image'/> */}
+          <div className='kaleidoscope fadein'></div>
         </div>
       }
       {
