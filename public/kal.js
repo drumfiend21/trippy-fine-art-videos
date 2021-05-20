@@ -1,4 +1,4 @@
-// $( document ).ready( function () {
+$( document ).ready( function () {
 
     var parameters = ( function ( src ) {
       var params = {}; //qryStr = src.split( '?' )[ 1 ];
@@ -172,4 +172,4 @@
           }
         }, 5000 );
     })();
-//   });
+  });

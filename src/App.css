@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600');
+
 .App {
   text-align: center;
 }
@@ -35,6 +37,10 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+body {
+  font-family: 'Montserrat'
 }
 
 .fadein {
@@ -84,4 +90,28 @@
   width: 100%;
   /* max-height: 100%; */
   margin: auto;
+}
+
+.lyrics {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: 80%;
+  text-align: center;
+  color: magenta;
+}
+
+canvas {
+  position: absolute;
+  top: 35%;
+}
+
+.picker-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 15px;
 }

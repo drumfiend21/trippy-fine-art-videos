@@ -6,11 +6,14 @@ import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Select from '@material-ui/core/Select'
 import FormControl from '@material-ui/core/FormControl'
-import InputLabel from '@material-ui/core/InputLabel';
+import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
+import TextareaAutosize from '@material-ui/core/TextareaAutosize'
 import Radio from '@material-ui/core/Radio'
 
-const steps = [1,2,3,4]
+import { ChromePicker } from 'react-color'
+
+const steps = [0, 1,2,3,4]
 
 const images = []
 
@@ -35,9 +38,15 @@ function useInterval(callback, delay) {
 }
 
 function App() {
-  const [step, setStep] = useState(1)
+  const [step, setStep] = useState(-1)
   const [valid, setValid] = useState(false)
   // const [src, setSrc] = useState('')
+
+  const [colors, setColors] = useState(['#fff', '#fff', '#fff', '#fff'])
+  const [lyrics, setLyrics] = useState([])
+  const [bpm, setBpm] = useState(10)
+  const [delay, setDelay] = useState(10000)
+
   const [departments, setDepartments] = useState([])
   const [departmentId, setDepartmentId] = useState('')
 
@@ -49,63 +58,6 @@ function App() {
 
   const [imageCount, setImageCount] = useState(-1)
   const [isRunning, setIsRunning] = useState(false)
-
-  useEffect(() => {
-    if (step === 4) {
-      const script = document.createElement('script');
-  
-      script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
-      script.async = true;
-    
-      document.body.appendChild(script);
-
-      const scriptTwo = document.createElement('script');
-    
-      scriptTwo.src = "kal.js";
-      scriptTwo.async = true;
-    
-      document.body.appendChild(scriptTwo);
-    }
-  
-    // return () => {
-    //   document.body.removeChild(script);
-    //   document.body.removeChild(scriptTwo);
-    // }
-  }, [step]);
-
-  useInterval(() => {
-    // Your custom logic here
-    getImage()
-  }, isRunning ? 10000 : null);
-  
-  // const [refetch, setRefetch] = useState(true)
-  const progressStep = () => {
-    let newStep = step
-    newStep++
-    if (newStep > steps[steps.length-1]) {
-      newStep = 1
-    }
-    setStep(newStep)
-  }
-
-  const decrementStep = () => {
-    let newStep = step
-    newStep --
-    if (newStep < 1) {
-      newStep = 1
-    }
-    setStep(newStep)
-  }
-
-  const handleDepartmentOnChange = (e) => {
-    setValid(true)
-    setDepartmentId(e.target.value)
-  }
-
-  const handleSearchStringOnChange = (e) => {
-    setSearchString(e.target.value)
-    setValid(true)
-  }
 
   const getBatchImages = async (offset) => {
     const promises = []
@@ -127,18 +79,86 @@ function App() {
 
     }
     setImageCount(newCount)
-    if (newCount % 5 === 0 && newCount < imagesTotal) {
+    if (newCount % 5 === 0 && newCount % 10 !== 0  && newCount < imagesTotal) {
       //fetch next batch
       getBatchImages(newCount+5)
     }
+    const text = lyrics[imageCount] === 'NA' ? '' : lyrics[imageCount]
+    if (text) {
+      window.setParticle(text, colors)
+    }
     var imageElements = document.getElementsByClassName("image")
-    console.log(imageElements)
     for (var i = 0; i < imageElements.length; i++) {
       imageElements[i].style.backgroundImage = [ 'url(', decodeURIComponent( images[newCount] ), ')' ].join( '' );
     }
   }
 
+  useInterval(() => {
+    // Your custom logic here
+    getImage()
+  }, isRunning ? delay : null);
+  
+  // const [refetch, setRefetch] = useState(true)
+  const progressStep = () => {
+    let newStep = step
+    newStep++
+    if (newStep > steps[steps.length-1]) {
+      newStep = -1
+    }
+    setStep(newStep)
+  }
+
+  const decrementStep = () => {
+    let newStep = step
+    newStep --
+    if (newStep < -1) {
+      newStep = -1
+    }
+    setStep(newStep)
+  }
+
+  const handleDepartmentOnChange = (e) => {
+    setValid(true)
+    setDepartmentId(e.target.value)
+  }
+
+  const handleSearchStringOnChange = (e) => {
+    setSearchString(e.target.value)
+    setValid(true)
+  }
+
+  const handleLyricsText = (e) => {
+    const text = e.target.value
+    const splitted = text.split('\n').filter(s => s !== '')
+    setValid(true)
+    setLyrics(splitted)
+  }
+
+  const handleBpmChange = (e) => {
+    const bpm = e.target.value
+    const secondsPerBeat = 60/bpm
+    const secondsPerBar = secondsPerBeat * 4
+    const secondsPerFourBars = secondsPerBar * 4
+    setDelay(secondsPerFourBars * 1000)
+    setValid(true)
+  }
+
+  const handleColorChange = (color, index) => {
+    const newColors = colors
+    newColors[index] = color.hex
+    setColors(newColors)
+  }
+
   useEffect(() => {
+    if (step === 0) {
+      var head  = document.getElementsByTagName('head')[0];
+      var link  = document.createElement('link');
+      link.rel  = 'stylesheet';
+      link.type = 'text/css';
+      link.href = 'https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600';
+      link.media = 'all';
+      head.appendChild(link);
+    }
     if (step === 3) {
       async function fetchData() {
         //&hasImages=true${departmentId ? '&departmentId=' + departmentId : ''}
@@ -154,6 +174,26 @@ function App() {
       fetchData()
     }
     if (step === 4) {
+      const script = document.createElement('script');
+  
+      script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
+      script.async = true;
+    
+      document.body.appendChild(script);
+
+      const scriptTwo = document.createElement('script');
+    
+      scriptTwo.src = "kal.js";
+      scriptTwo.async = true;
+    
+      document.body.appendChild(scriptTwo);
+
+      const scriptThree = document.createElement('script');
+    
+      scriptThree.src = "particle.js";
+      scriptThree.async = true;
+    
+      document.body.appendChild(scriptThree); 
       setIsRunning(true)
     }
   }, [step])
@@ -179,6 +219,42 @@ function App() {
   
   return (
     <>
+      { step === -1 &&
+        <div>
+          <p>Enter your lyrics.  Separate them with newlines for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
+          <TextareaAutosize
+            rowsMax={200}
+            aria-label="maximum height"
+            defaultValue=""
+            onChange={handleLyricsText}
+          />
+          <p>Choose four colors for your lyric text animation</p>
+          <div className='picker-container'>
+            <ChromePicker
+              color={ colors[0] }
+              onChangeComplete={ (c) => handleColorChange(c, 0) }
+            />
+            <ChromePicker
+              color={ colors[1] }
+              onChangeComplete={ (c) => handleColorChange(c, 1) }
+            />
+            <ChromePicker
+              color={ colors[2] }
+              onChangeComplete={ (c) => handleColorChange(c, 2) }
+            />
+            <ChromePicker
+              color={ colors[3] }
+              onChangeComplete={ (c) => handleColorChange(c, 3) }
+            />
+          </div>
+        </div>
+      }
+      { step === 0 &&
+        <div>
+          <p>Enter BPM</p>
+          <TextField id="standard-basic" label="BPM" onChange={handleBpmChange}/>
+        </div>
+      }
       { step === 1 &&
         <div>
           <p>Choose an art department from the MET</p>
@@ -216,9 +292,9 @@ function App() {
       }
       { step === 4 &&
         <div className="imageBox">
-          {/* <p>{images[imageCount]}</p>
-          <img src={images[imageCount]} className='image'/> */}
-          <div className='kaleidoscope fadein'></div>
+          <div className='kaleidoscope'></div>
+          {/* <div className='lyrics'>
+          </div> */}
         </div>
       }
       {
