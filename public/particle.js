@@ -4,7 +4,7 @@ window.setParticle = (stringVal, colors) => {
         document.body.removeChild(oldcanv[0])
     }
     let particles = [];
-    let frequency = 0
+    let frequency = 100
     // Popolate particles
     setInterval(
         function(){
@@ -89,10 +89,10 @@ window.setParticle = (stringVal, colors) => {
     function writeText(canvas, context, text){
         let size = 50
         context.font = size + "px Montserrat";
-        context.fillStyle = "#111111";
+        context.fillStyle = "#FF00D9";
         context.textAlign = "center";
         context.shadowColor="white";
-        context.shadowBlur=10;
+        context.shadowBlur=1;
         let lineheight = 70
         let lines = text.split('\n');
         for(let i = 0; i<lines.length; i++){

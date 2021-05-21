@@ -1,5 +1,5 @@
-$( document ).ready( function () {
-
+// $( document ).ready( function () {
+// window.kal = (imgSrc) => {
     var parameters = ( function ( src ) {
       var params = {}; //qryStr = src.split( '?' )[ 1 ];
     //   if( qryStr ) {
@@ -9,7 +9,7 @@ $( document ).ready( function () {
     //       params[ k ] = ps[ 1 ] || true;
     //     });
     //   }
-      params.src = 'https://mraffaele.com/wp-content/uploads/2013/07/kaleidoscope.jpg'
+      params.src = 'img/butterfly-montage.jpeg'
       return params;
     // })( location.search );
     })();
@@ -172,4 +172,5 @@ $( document ).ready( function () {
           }
         }, 5000 );
     })();
-  });
+  // });
+// }

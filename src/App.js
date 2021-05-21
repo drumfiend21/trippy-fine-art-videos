@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react'
 import './App.css'
 import './kal.css'
+import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
@@ -9,13 +10,16 @@ import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import TextareaAutosize from '@material-ui/core/TextareaAutosize'
-import Radio from '@material-ui/core/Radio'
-
+import Loader from 'react-loader-spinner'
+import Slide from '@material-ui/core/Slide'
 import { ChromePicker } from 'react-color'
+import { findAllByTestId } from '@testing-library/dom'
 
 const steps = [0, 1,2,3,4]
 
-const images = []
+let images = []
+
+let replayTimer = 0
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -56,8 +60,14 @@ function App() {
   const [imagesTotal, setImagesTotal] = useState(0)
   const [queryError, setQueryError] = useState(false)
 
-  const [imageCount, setImageCount] = useState(-1)
+  const [imageCount, setImageCount] = useState(0)
   const [isRunning, setIsRunning] = useState(false)
+
+  const [startReplay, setStartReplay] = useState(false)
+
+  const [showStepFourOptions, setShowStepFourOptions] = useState(false)
+
+  const [showHelper, setShowHelper] = useState(true)
 
   const getBatchImages = async (offset) => {
     const promises = []
@@ -76,29 +86,65 @@ function App() {
     newCount ++
     if (newCount > imagesTotal) {
       newCount = 0
-
     }
     setImageCount(newCount)
-    if (newCount % 5 === 0 && newCount % 10 !== 0  && newCount < imagesTotal) {
+    if (newCount % 5 === 0 && newCount % 10 !== 0  && newCount < imagesTotal && newCount + 15 > images.length) {
       //fetch next batch
       getBatchImages(newCount+5)
     }
     const text = lyrics[imageCount] === 'NA' ? '' : lyrics[imageCount]
-    if (text) {
-      window.setParticle(text, colors)
-    }
     var imageElements = document.getElementsByClassName("image")
     for (var i = 0; i < imageElements.length; i++) {
       imageElements[i].style.backgroundImage = [ 'url(', decodeURIComponent( images[newCount] ), ')' ].join( '' );
+      imageElements[i].style.animationDuration = delay/1000 + 's'
+    }
+    if (text || text === '') {
+      window.setParticle(text, colors)
     }
   }
 
   useInterval(() => {
     // Your custom logic here
+    setStartReplay(false)
+    setShowHelper(false)
     getImage()
   }, isRunning ? delay : null);
   
   // const [refetch, setRefetch] = useState(true)
+
+  const startOver = () => {
+    setStep(-1)
+    setValid(false)
+
+    setColors(['#fff', '#fff', '#fff', '#fff'])
+    setLyrics([])
+    setBpm(10)
+    setDelay(10000)
+
+    setDepartments([])
+    setDepartmentId('')
+
+    setSearchString('')
+
+    setObjectIds([])
+    setImagesTotal(0)
+    setQueryError(false)
+
+    setImageCount(0)
+    setIsRunning(false)
+    images = []
+
+    var oldcanv = document.getElementsByTagName('canvas');
+    if (oldcanv.length) {
+        document.body.removeChild(oldcanv[0])
+    }
+  }
+
+  const replay = () => {
+    setStartReplay(true)
+    setImageCount(0)
+  }
+
   const progressStep = () => {
     let newStep = step
     newStep++
@@ -129,7 +175,7 @@ function App() {
 
   const handleLyricsText = (e) => {
     const text = e.target.value
-    const splitted = text.split('\n').filter(s => s !== '')
+    const splitted = text.split('\n\n').filter(s => s !== '')
     setValid(true)
     setLyrics(splitted)
   }
@@ -158,22 +204,7 @@ function App() {
       link.href = 'https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600';
       link.media = 'all';
       head.appendChild(link);
-    }
-    if (step === 3) {
-      async function fetchData() {
-        //&hasImages=true${departmentId ? '&departmentId=' + departmentId : ''}
-        const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=${searchString}`).then(res => res.json())
-        if (response.objectIDs.length > 20) {
-          setObjectIds(response.objectIDs)
-          setImagesTotal(parseInt(response.total))
-        } else {
-          decrementStep()
-          setQueryError(true)
-        }
-      }
-      fetchData()
-    }
-    if (step === 4) {
+
       const script = document.createElement('script');
   
       script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
@@ -194,7 +225,24 @@ function App() {
       scriptThree.async = true;
     
       document.body.appendChild(scriptThree); 
+    }
+    if (step === 3) {
+      async function fetchData() {
+        //&hasImages=true${departmentId ? '&departmentId=' + departmentId : ''}
+        const response = await fetch(`https://collectionapi.metmuseum.org/public/collection/v1/search?q=${searchString}`).then(res => res.json())
+        if (response.objectIDs.length > 20) {
+          setObjectIds(response.objectIDs)
+          setImagesTotal(parseInt(response.total))
+        } else {
+          decrementStep()
+          setQueryError(true)
+        }
+      }
+      fetchData()
+    }
+    if (step === 4) {
       setIsRunning(true)
+      setStartReplay(true)
     }
   }, [step])
   
@@ -221,7 +269,7 @@ function App() {
     <>
       { step === -1 &&
         <div>
-          <p>Enter your lyrics.  Separate them with newlines for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
+          <p>Enter your lyrics.  Separate them with new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
           <TextareaAutosize
             rowsMax={200}
             aria-label="maximum height"
@@ -290,42 +338,88 @@ function App() {
           }
         </div>
       }
-      { step === 4 &&
-        <div className="imageBox">
-          <div className='kaleidoscope'></div>
-          {/* <div className='lyrics'>
-          </div> */}
-        </div>
+      {
+        step === 4 &&
+        <div className='lyrics-background'/>
       }
       {
         queryError && <p>Not enough art to make a cool video.  Please select a different department and/or search something else.</p>
       }
-      <hr />
-      <Button 
-        variant="contained" 
-        color="primary" 
-        disableElevation
-        onClick={() => {
-          decrementStep()
-          setValid(false)
-          setQueryError(false)
-        }}
-      >
-        Go back
-      </Button>
-      <Button 
-        variant="contained" 
-        color="primary" 
-        disableElevation
-        onClick={() => {
-          progressStep()
-          setValid(false)
-          setQueryError(false)
-        }}
-        disabled={!valid}
-      >
-        Continue
-      </Button>
+      <div style={{display: isRunning ? 'block' : 'none'}} className='kaleidoscope fadein'></div>
+      {step !==4 && <hr />}
+      { step !== 4 && <>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          disableElevation
+          onClick={() => {
+            decrementStep()
+            setValid(false)
+            setQueryError(false)
+          }}
+        >
+          Go back
+        </Button>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          disableElevation
+          onClick={() => {
+            progressStep()
+            setValid(false)
+            setQueryError(false)
+          }}
+          disabled={!valid}
+        >
+          Continue
+        </Button>
+      </>
+    }
+    {
+      step === 4 && showHelper && <div className='helper-container'>
+        <p>Hover Here for Options</p>
+      </div>
+    }
+    { step === 4 && 
+    <div 
+      className='hover-options' 
+      onMouseLeave={() => setShowStepFourOptions(false)} 
+      onMouseEnter={() => setShowStepFourOptions(true)}
+    >
+      <Slide direction="down" in={showStepFourOptions} mountOnEnter unmountOnExit>
+        <div className='hover-buttons-container'>
+          <Button 
+              variant="contained" 
+              color="primary" 
+              disableElevation
+              onClick={startOver}
+            >
+              Start Over
+            </Button>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              disableElevation
+              onClick={replay}
+            >
+              Replay
+            </Button>
+          </div>
+        </Slide>
+      </div>
+    }
+    {
+      startReplay &&
+      <div className='replay-countdown'>
+        <Loader
+          type="ThreeDots"
+          color="white"
+          height={100}
+          width={100}
+          timeout={100000} //3 secs
+        />
+      </div>
+    }
     </>
   );
 }
