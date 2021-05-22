@@ -69,6 +69,14 @@ function App() {
 
   const [showHelper, setShowHelper] = useState(true)
 
+  const [aud, setAud] = useState(null)
+  const [audioPlaying, setAudioPlaying] = useState(false)
+
+  const playAudio = () => {
+    aud.play()
+    setAudioPlaying(true)
+  }
+
   const getBatchImages = async (offset) => {
     const promises = []
     objectIds.slice(offset, offset+10).forEach(oId => {
@@ -100,6 +108,9 @@ function App() {
     }
     if (text || text === '') {
       window.setParticle(text, colors)
+    }
+    if (!audioPlaying) {
+      playAudio()
     }
   }
 
@@ -142,6 +153,9 @@ function App() {
 
   const replay = () => {
     setStartReplay(true)
+    aud.pause()
+    aud.currentTime = 0 
+    setAudioPlaying(false)
     setImageCount(0)
   }
 
@@ -193,6 +207,17 @@ function App() {
     const newColors = colors
     newColors[index] = color.hex
     setColors(newColors)
+  }
+
+  const getAudio = (e) => {
+    var f = document.getElementById('song')
+    const reader = new FileReader();
+    reader.onload = function(){
+      var str = this.result
+      const aud = new Audio(str)
+      setAud(aud)
+    }
+    reader.readAsDataURL(f.files[0])
   }
 
   useEffect(() => {
@@ -298,10 +323,16 @@ function App() {
         </div>
       }
       { step === 0 &&
-        <div>
-          <p>Enter BPM</p>
-          <TextField id="standard-basic" label="BPM" onChange={handleBpmChange}/>
-        </div>
+        <>
+          <div>
+            <p>Enter BPM</p>
+            <TextField id="standard-basic" label="BPM" onChange={handleBpmChange}/>
+          </div>
+          <div>
+            <p>Upload your MP3</p>
+            <input id="song" type="file" accept=".mp3" onChange={getAudio}/>
+          </div>
+        </>
       }
       { step === 1 &&
         <div>
