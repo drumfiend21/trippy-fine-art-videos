@@ -13,13 +13,14 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize'
 import Loader from 'react-loader-spinner'
 import Slide from '@material-ui/core/Slide'
 import { ChromePicker } from 'react-color'
-import { findAllByTestId } from '@testing-library/dom'
 
 const steps = [0, 1,2,3,4]
 
 let images = []
 
-let replayTimer = 0
+let aud
+let recorder
+let data = []
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -39,6 +40,10 @@ function useInterval(callback, delay) {
       return () => clearInterval(id);
     }
   }, [delay]);
+}
+
+const wait = (delayInMS) => {
+  return new Promise(resolve => setTimeout(resolve, delayInMS));
 }
 
 function App() {
@@ -69,10 +74,91 @@ function App() {
 
   const [showHelper, setShowHelper] = useState(true)
 
-  const [aud, setAud] = useState(null)
+  // const [aud, setAud] = useState(null)
   const [audioPlaying, setAudioPlaying] = useState(false)
 
+  const [isRecording, setIsRecording] = useState(false)
+
+  const [showDownload, setShowDownload] = useState(false)
+
+  const [imageElements, setImageElements] = useState([])
+
+  const clearParticle = () => {
+    var oldcanv = document.getElementsByTagName('canvas');
+    if (oldcanv.length) {
+        document.body.removeChild(oldcanv[0])
+    }
+  }
+
+  const startRecording = (stream, lengthInMs) => {
+    recorder = new MediaRecorder(stream);
+    data = [];
+
+    recorder.ondataavailable = event => data.push(event.data);
+    recorder.start();
+
+    let stopped = new Promise((resolve, reject) => {
+      recorder.onstop = resolve;
+      recorder.onerror = event => reject(event.name);
+    });
+
+    let recorded = wait(lengthInMs).then(() => {
+      return recorder.state == "recording" && recorder.stop()
+    });
+
+    return Promise.all([
+      stopped,
+      recorded
+    ])
+    .then(() => data)
+  }
+
+  const stop = () => {
+    const preview = document.getElementById('preview')
+    preview.srcObject.getTracks().forEach(track => track.stop());
+    setIsRunning(false)
+    setImageCount(-1)
+    clearParticle()
+    setShowDownload(true)
+  }
+  
+  const recordScreen = () => {
+    const preview = document.getElementById('preview')
+    const downloadButton = document.getElementById('download')
+    navigator.mediaDevices.getDisplayMedia({
+      video: {
+        cursor: 'never',
+        width: 1280,
+        height: 720,
+        frameRate: 30
+      },
+      audio: {
+        echoCancellation: false,
+        googAutoGainControl: false,
+        autoGainControl: false,
+        noiseSuppression: false,
+        sampleRate: 44100
+      }
+    }).then(stream => {
+      preview.srcObject = stream
+      downloadButton.href = stream
+      preview.captureStream = preview.captureStream || preview.mozCaptureStream
+      return new Promise(resolve => {
+        return resolve(preview)
+      });
+    }).then(() => {
+      return startRecording(preview.captureStream(), aud.duration * 1000)
+    }).then (recordedChunks => {
+      let recordedBlob = new Blob(recordedChunks, { type: "video/webm" })
+      downloadButton.href = URL.createObjectURL(recordedBlob)
+      downloadButton.download = "LyricVideo.webm"
+      stop()
+    })
+  }
+
   const playAudio = () => {
+    // TODO: remove this line
+    // aud.currentTime = 240
     aud.play()
     setAudioPlaying(true)
   }
@@ -101,10 +187,14 @@ function App() {
       getBatchImages(newCount+5)
     }
     const text = lyrics[imageCount] === 'NA' ? '' : lyrics[imageCount]
-    var imageElements = document.getElementsByClassName("image")
+    // var imageElements = document.getElementsByClassName("image")
     for (var i = 0; i < imageElements.length; i++) {
+      const duration = parseFloat(imageElements[i].style.animationDuration)
+      const compareDuration = parseFloat((delay/1000).toFixed(5))
+      if (duration !== compareDuration) {
+        imageElements[i].style.animationDuration = delay/1000 + 's'
+      } 
       imageElements[i].style.backgroundImage = [ 'url(', decodeURIComponent( images[newCount] ), ')' ].join( '' );
-      imageElements[i].style.animationDuration = delay/1000 + 's'
     }
     if (text || text === '') {
       window.setParticle(text, colors)
@@ -145,10 +235,14 @@ function App() {
     setIsRunning(false)
     images = []
 
-    var oldcanv = document.getElementsByTagName('canvas');
-    if (oldcanv.length) {
-        document.body.removeChild(oldcanv[0])
-    }
+    aud.pause()
+    aud = null
+    setAudioPlaying(false)
+
+    stop()
+    setShowDownload(false)
+
+    clearParticle()
   }
 
   const replay = () => {
@@ -157,6 +251,9 @@ function App() {
     aud.currentTime = 0 
     setAudioPlaying(false)
     setImageCount(0)
+    setShowDownload(false)
+    stop()
+    recordScreen()
   }
 
   const progressStep = () => {
@@ -214,8 +311,7 @@ function App() {
     const reader = new FileReader();
     reader.onload = function(){
       var str = this.result
-      const aud = new Audio(str)
-      setAud(aud)
+      aud = new Audio(str)
     }
     reader.readAsDataURL(f.files[0])
   }
@@ -268,6 +364,11 @@ function App() {
     if (step === 4) {
       setIsRunning(true)
       setStartReplay(true)
+      setImageElements(document.getElementsByClassName('image'))
+      if (!isRecording) {
+        setIsRecording(true)
+        recordScreen()
+      }
     }
   }, [step])
   
@@ -370,7 +471,7 @@ function App() {
         </div>
       }
       {
-        step === 4 &&
+        step === 4 && lyrics[imageCount-1] !== 'NA' && imageCount > -1 &&
         <div className='lyrics-background'/>
       }
       {
@@ -420,24 +521,32 @@ function App() {
       <Slide direction="down" in={showStepFourOptions} mountOnEnter unmountOnExit>
         <div className='hover-buttons-container'>
           <Button 
-              variant="contained" 
-              color="primary" 
-              disableElevation
-              onClick={startOver}
-            >
-              Start Over
-            </Button>
-            <Button 
-              variant="contained" 
-              color="primary" 
-              disableElevation
-              onClick={replay}
-            >
-              Replay
-            </Button>
-          </div>
-        </Slide>
-      </div>
+            variant="contained" 
+            color="primary" 
+            disableElevation
+            onClick={startOver}
+          >
+            Start Over
+          </Button>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            disableElevation
+            onClick={replay}
+          >
+            Replay
+          </Button>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            disableElevation
+            onClick={stop}
+          >
+            Stop Recording
+          </Button>
+        </div>
+      </Slide>
+    </div>
     }
     {
       startReplay &&
@@ -450,6 +559,19 @@ function App() {
           timeout={100000} //3 secs
         />
       </div>
+    }
+    {
+      step === 4 && <video style={{display: 'none'}} id="preview" width="160" height="120" autoplay muted />
+    }
+    {
+      step === 4 &&
+        <a 
+          style={{display: showDownload ? 'block' : 'none'}}
+          id="download"
+          className='button'
+        >
+          Download
+        </a>
     }
     </>
   );
