@@ -96,17 +96,16 @@ body {
   position: absolute;
   margin-left: auto;
   margin-right: auto;
+  /* line-height: 65px; */
   z-index: 10;
   opacity: 1;
   left: 0;
   right: 0;
-  /* top: 49%; */
 
   text-align: center;
   color: black;
   font-family: Montserrat;
-  font-size: 50px;
-  margin-bottom: -60px;
+  margin-bottom: -30px;
   -webkit-animation: AnimationName 15s ease infinite;
   -moz-animation: AnimationName 15s ease infinite;
   -o-animation: AnimationName 15s ease infinite;
@@ -116,7 +115,18 @@ body {
   -webkit-text-fill-color: transparent;
   /* background-size: 100%; */
   background-size: 400% 400%;
-  
+}
+
+@media only screen and (max-width: 922px) {
+  .lyrics {
+    font-size: 25px;
+  }
+}
+
+@media only screen and (min-width: 922px) {
+  .lyrics {
+    font-size: 50px;
+  }
 }
 
 .lyrics-shadow-top {
@@ -132,10 +142,22 @@ body {
   text-align: center;
   color: black;
   font-family: Montserrat;
-  font-size: 50px;
+  /* font-size: 50px; */
   margin-bottom: -60px; 
-  text-shadow: 2px 2px black;
+  text-shadow: 0px 0px black;
   
+}
+
+@media only screen and (max-width: 922px) {
+  .lyrics-shadow-top {
+    font-size: 25px;
+  }
+}
+
+@media only screen and (min-width: 922px) {
+  .lyrics-shadow-top {
+    font-size: 50px;
+  }
 }
 
 .lyrics-shadow-bottom {
@@ -150,9 +172,21 @@ body {
   text-align: center;
   color: black;
   font-family: Montserrat;
-  font-size: 50px;
+  /* font-size: 50px; */
   margin-bottom: -60px; 
-  text-shadow: 2px 2px black;
+  text-shadow: 1px 2px black;
+}
+
+@media only screen and (max-width: 922px) {
+  .lyrics-shadow-bottom {
+    font-size: 25px;
+  }
+}
+
+@media only screen and (min-width: 922px) {
+  .lyrics-shadow-bottom {
+    font-size: 50px;
+  }
 }
 
 canvas {
@@ -164,13 +198,17 @@ canvas {
 .picker-container {
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 15px;
+  justify-content: center;
+  align-items: center;
+  gap: 35px;
 }
 
 .lyrics-background {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   margin-left: auto;
   margin-right: auto;
   left: 0;
@@ -178,10 +216,31 @@ canvas {
   top: 49%;
   opacity: 0.45;
   width: 1200px;
-  height: 300px;
   background-color: white;
   z-index: 6;
 }
+
+@media only screen and (max-width: 922px) {
+  .lyrics-background {
+    height: 290px;
+  }
+}
+
+
+@media only screen and (min-width: 922px) {
+  .lyrics-background {
+    height: 500px;
+  }
+}
+
+@media only screen and (min-width: 1200px) {
+  .lyrics-background {
+    height: 350px;
+  }
+}
+
+
+
 
 .replay-countdown {
   position: absolute;
@@ -300,4 +359,22 @@ canvas {
   margin: 0 auto;
   max-width: 567px;
   padding: 15px;
+}
+
+.footer {
+  padding-bottom:10px;
+}
+
+.menu-button-container {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
+.container {
+  max-width: 800px;
+  text-align: center;
+  max-height: 500px;
+  margin: 0 auto;
 }

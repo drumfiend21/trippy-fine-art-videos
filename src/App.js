@@ -53,6 +53,7 @@ function App() {
   // const [src, setSrc] = useState('')
 
   const [colors, setColors] = useState(['black', 'black', 'black', 'black'])
+  const [showColorPicker, setShowColorPicker] = useState(null)
   const [lyrics, setLyrics] = useState([])
   const [bpm, setBpm] = useState(10)
   const [delay, setDelay] = useState(10000)
@@ -207,7 +208,7 @@ function App() {
   const stop = () => {
     const preview = document.getElementById('preview')
 
-    preview.srcObject && preview.srcObject.getTracks && preview.srcObject.getTracks().forEach(track => track.stop());
+    preview && preview.srcObject && preview.srcObject.getTracks && preview.srcObject.getTracks().forEach(track => track.stop());
     setIsRunning(false)
     setImageCount(0)
     // clearParticle()
@@ -419,6 +420,14 @@ function App() {
     reader.readAsDataURL(f.files[0])
   }
 
+  const handleShowColorPicker = (i) => {
+    if(showColorPicker) {
+      setShowColorPicker(null)
+    } else {
+      setShowColorPicker(i)
+    }
+  }
+
   useEffect(() => {
     if (step === -2) {
       setValid(true)
@@ -502,116 +511,164 @@ function App() {
 
   const lyric = lyrics[imageCount - 1] === 'NA' ? '' : lyrics[imageCount-1]
 
-  let pTop = 300
+  let pTop = 44
   
-  return (
-    <>
-      {
-        step === -2 && <div className='greeting'>
-          <Paper elevation={10} style={{padding: '50px'}}>
-            <h1>Fine Art Music Video Generator</h1>
-            <p>As a musician, I wanted a easy way to make interesting music videos.</p>
-            <p>This is a simple app I created that will let you do just that.</p>
-            <p>This generator draws on art from the Metropolitan Museum of Art</p>
-            <p>and creates psychedelic kaleidoscopic imagery.</p>
-            <p>All synced to your mp3 and lyrics.</p>
-            <p>Enjoy,</p>
-            <p>Mowgli Lion</p>
-            <a href='http://www.jungleej.wordpress.com'>Mowgli Music</a>
-          </Paper>
-        </div> 
-      }
-      { step === -1 &&
-        <div>
-          <p>Enter your lyrics.  Separate them with new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
-          <TextareaAutosize
-            rowsMax={200}
-            aria-label="maximum height"
-            defaultValue=""
-            onChange={handleLyricsText}
-          />
-          <p>Choose four colors for your lyric text animation.  Otherwise text will be black.</p>
-          <div className='picker-container'>
-            <ChromePicker
-              color={ colors[0] }
-              onChangeComplete={ (c) => handleColorChange(c, 0) }
-            />
-            <ChromePicker
-              color={ colors[1] }
-              onChangeComplete={ (c) => handleColorChange(c, 1) }
-            />
-            <ChromePicker
-              color={ colors[2] }
-              onChangeComplete={ (c) => handleColorChange(c, 2) }
-            />
-            <ChromePicker
-              color={ colors[3] }
-              onChangeComplete={ (c) => handleColorChange(c, 3) }
-            />
-          </div>
-        </div>
-      }
-      { step === 0 &&
-        <>
+  return (<>
+    <div className='container'>
+      <Paper elevation='10'>
+        {
+          step === -2 && <div className='greeting'>
+            <Paper elevation={0} style={{padding: '50px'}}>
+              <h1>Fine Art Music Video Generator</h1>
+              <p>As a musician, I wanted a easy way to make interesting music videos.</p>
+              <p>This is a simple app I created that will let you do just that.</p>
+              <p>This generator draws on art from the Metropolitan Museum of Art</p>
+              <p>and creates psychedelic kaleidoscopic imagery.</p>
+              <p>All synced to your mp3 and lyrics.</p>
+              <p>Enjoy,</p>
+              <p>Mowgli Lion</p>
+              <a href='http://www.jungleej.wordpress.com'>Mowgli Music</a>
+            </Paper>
+          </div> 
+        }
+        { step === -1 &&
           <div>
-            <p>Enter BPM</p>
-            <TextField id="standard-basic" label="BPM" onChange={handleBpmChange}/>
+            <p>Enter your lyrics.  Separate them with new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
+            <TextareaAutosize
+              rowsMax={10}
+              aria-label="maximum height"
+              defaultValue=""
+              onChange={handleLyricsText}
+            />
+            <p>Choose four colors for your lyric text animation.  Otherwise text will be black.</p>
+            <div className='picker-container'>
+              {
+              colors.map((c,i) => {
+                return (
+                  <>
+                    <Button 
+                      onClick={() => handleShowColorPicker(i)} 
+                      variant="contained" 
+                      color="primary" 
+                      disableElevation
+                      style={{backgroundColor: colors[i]}}
+                    >
+                      <p>{i+1}</p>
+                    </Button>
+                    <Slide direction="right" in={showColorPicker === i} mountOnEnter unmountOnExit>
+                      <ChromePicker
+                        color={ colors[i] }
+                        onChangeComplete={ (c) => {
+                          handleColorChange(c, i)
+                        } }
+                      />
+                    </Slide>
+                  </>
+                )
+              })}
+            </div>
           </div>
+        }
+        { step === 0 &&
+          <>
+            <div>
+              <p>Enter BPM</p>
+              <TextField id="standard-basic" label="BPM" onChange={handleBpmChange}/>
+            </div>
+            <div>
+              <p>Upload your MP3</p>
+              <input id="song" type="file" accept=".mp3" onChange={getAudio}/>
+            </div>
+          </>
+        }
+        { step === 1 &&
           <div>
-            <p>Upload your MP3</p>
-            <input id="song" type="file" accept=".mp3" onChange={getAudio}/>
+            <p>Choose an art department from the MET</p>
+            <FormControl className='formControl'>
+              <InputLabel id="demo-simple-select-label">Department</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={departmentId}
+                onChange={handleDepartmentOnChange}
+              >
+                <MenuItem value={null}>ALL DEPARTMENTS</MenuItem>
+                {/* {departments.map(d => {
+                  return (<MenuItem value={d.departmentId}>{d.displayName}</MenuItem>)
+                })} */}
+              </Select>
+            </FormControl>
           </div>
-        </>
-      }
-      { step === 1 &&
-        <div>
-          <p>Choose an art department from the MET</p>
-          <FormControl className='formControl'>
-            <InputLabel id="demo-simple-select-label">Department</InputLabel>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={departmentId}
-              onChange={handleDepartmentOnChange}
+        }
+        { step === 2 &&
+          <div>
+            <p>Enter a search string</p>
+            <TextField id="standard-basic" label="Search string" onChange={handleSearchStringOnChange}/>
+          </div>
+        }
+        { step === 3 &&
+          <div>
+            {
+              !valid && <p>Preparing video...</p> 
+            }
+            {
+              valid && <p>Video ready.  Click continue!</p>
+            }
+          </div>
+        }
+        {
+          queryError && <p>Not enough art to make a cool video.  Please select a different department and/or search something else.</p>
+        }
+        
+        {/* <div id='overlay' style={{display: isRunning ? 'block' : 'none'}}></div> */}
+        { step !== 4 && <div className='footer'>
+          <hr />
+          <div className='menu-button-container'>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              disableElevation
+              disabled={step === -2}
+              onClick={() => {
+                decrementStep()
+                setValid(false)
+                setQueryError(false)
+              }}
             >
-              <MenuItem value={null}>ALL DEPARTMENTS</MenuItem>
-              {/* {departments.map(d => {
-                return (<MenuItem value={d.departmentId}>{d.displayName}</MenuItem>)
-              })} */}
-            </Select>
-          </FormControl>
+              Go back
+            </Button>
+            <Button 
+              variant="contained" 
+              color="primary" 
+              disableElevation
+              onClick={() => {
+                progressStep()
+                setValid(false)
+                setQueryError(false)
+              }}
+              disabled={!valid}
+            >
+              Continue
+            </Button>
+          </div>
         </div>
       }
-      { step === 2 &&
-        <div>
-          <p>Enter a search string</p>
-          <TextField id="standard-basic" label="Search string" onChange={handleSearchStringOnChange}/>
-        </div>
-      }
-      { step === 3 &&
-        <div>
-          {
-            !valid && <p>Preparing video...</p> 
-          }
-          {
-            valid && <p>Video ready.  Click continue!</p>
-          }
-        </div>
-      }
-      {
+      </Paper>
+    </div>
+    {
         step === 4 && lyric && imageCount > -1 &&
         <>
           <div className='lyrics-background' />
           { 
             lyric && lyric.split('\n').map(t => {
-              pTop+=50
+              pTop+=7
               return (
                 <>
-                  <p style={{top: pTop, backgroundImage: `linear-gradient(270deg, ${colors[0]}, ${colors[1]}, ${colors[2]}, ${colors[3]}`}} className='lyrics'>{t}</p>
+                  <p style={{top: pTop + '%', backgroundImage: `linear-gradient(270deg, ${colors[0]}, ${colors[1]}, ${colors[2]}, ${colors[3]}`}} className='lyrics'>{t}</p>
                   { colors.filter(c => c !== 'black').length && (
                     <>
-                      <p style={{top: pTop - 1}} className='lyrics-shadow-top'>{t}</p>
-                      <p style={{top: pTop + 1}} className='lyrics-shadow-bottom'>{t}</p>
+                      <p style={{top: pTop + '%'}} className='lyrics-shadow-top'>{t}</p>
+                      <p style={{top: pTop + '%'}} className='lyrics-shadow-bottom'>{t}</p>
                     </>
                   )}
                 </>
@@ -620,41 +677,7 @@ function App() {
           }
         </>
       }
-      {
-        queryError && <p>Not enough art to make a cool video.  Please select a different department and/or search something else.</p>
-      }
-      <div style={{display: isRunning ? 'block' : 'none'}} className='kaleidoscope fadein'></div>
-      {/* <div id='overlay' style={{display: isRunning ? 'block' : 'none'}}></div> */}
-      {step !==4 && <hr />}
-      { step !== 4 && <>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          disableElevation
-          disabled={step === -2}
-          onClick={() => {
-            decrementStep()
-            setValid(false)
-            setQueryError(false)
-          }}
-        >
-          Go back
-        </Button>
-        <Button 
-          variant="contained" 
-          color="primary" 
-          disableElevation
-          onClick={() => {
-            progressStep()
-            setValid(false)
-            setQueryError(false)
-          }}
-          disabled={!valid}
-        >
-          Continue
-        </Button>
-      </>
-    }
+    <div style={{display: isRunning ? 'block' : 'none'}} className='kaleidoscope fadein'></div>
     {
       step === 4 && showHelper && <div className='helper-container'>
         <p>Hover Here for Options</p>
@@ -709,12 +732,6 @@ function App() {
       </div>
     } 
     {
-      // step === 4 && <canvas style={{display: 'block'}} id='loadnext' />
-    }
-    {
-      step === 4 && <video style={{display: 'none'}} id="preview" width="160" height="120" autoplay muted />
-    }
-    {
       step === 4 &&
         <a 
           style={{display: showDownload ? 'block' : 'none'}}
@@ -724,7 +741,7 @@ function App() {
           Download
         </a>
     }
-    </>
+  </>
   );
 }
 
