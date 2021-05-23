@@ -732,6 +732,9 @@ function App() {
       </div>
     } 
     {
+      step === 4 && <video style={{display: 'none'}} id="preview" width="160" height="120" autoplay muted />
+    }
+    {
       step === 4 &&
         <a 
           style={{display: showDownload ? 'block' : 'none'}}
