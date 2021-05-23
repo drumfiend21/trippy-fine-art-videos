@@ -319,7 +319,7 @@ function App() {
     setStep(-2)
     setValid(false)
 
-    setColors([['black', 'black', 'black', 'black']])
+    setColors(['black', 'black', 'black', 'black'])
     setLyrics([])
     setBpm(10)
     setDelay(10000)
