@@ -322,7 +322,7 @@ function App() {
       // window.setParticle(text, colors)
     }
     if (!audioPlaying) {
-      playAudio()
+      // playAudio()
     }
     // load up next image
     // getBase64Image(images[imageCount+1])
@@ -392,6 +392,9 @@ function App() {
       newStep = steps.length-1
     }
     setStep(newStep)
+    if (newStep === 4 && !audioPlaying) {
+      setTimeout(playAudio, delay)
+    }
   }
 
   const decrementStep = () => {
