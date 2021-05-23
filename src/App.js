@@ -28,6 +28,22 @@ let aud
 let recorder
 let data = []
 
+function detectMob() {
+  const toMatch = [
+      /Android/i,
+      /webOS/i,
+      /iPhone/i,
+      /iPad/i,
+      /iPod/i,
+      /BlackBerry/i,
+      /Windows Phone/i
+  ];
+
+  return toMatch.some((toMatchItem) => {
+      return navigator.userAgent.match(toMatchItem);
+  });
+}
+
 function useInterval(callback, delay) {
   const savedCallback = useRef();
 
@@ -362,7 +378,9 @@ function App() {
     setImageCount(0)
     stop()
     setShowDownload(false)
-    recordScreen()
+    if (!detectMob) {
+      recordScreen()
+    }
     setIsRunning(true)
   }
 
@@ -495,7 +513,9 @@ function App() {
       // overlayInit()
       if (!isRecording) {
         setIsRecording(true)
-        recordScreen()
+        if (!detectMob) {
+          recordScreen()
+        }
       }
     }
   }, [step])
