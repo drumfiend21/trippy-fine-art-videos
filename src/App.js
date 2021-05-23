@@ -51,7 +51,7 @@ function App() {
   const [valid, setValid] = useState(false)
   // const [src, setSrc] = useState('')
 
-  const [colors, setColors] = useState(['#fff', '#fff', '#fff', '#fff'])
+  const [colors, setColors] = useState(['black', 'black', 'black', 'black'])
   const [lyrics, setLyrics] = useState([])
   const [bpm, setBpm] = useState(10)
   const [delay, setDelay] = useState(10000)
@@ -83,12 +83,102 @@ function App() {
 
   const [imageElements, setImageElements] = useState([])
 
-  const clearParticle = () => {
-    var oldcanv = document.getElementsByTagName('canvas');
-    if (oldcanv.length) {
-        document.body.removeChild(oldcanv[0])
+  const [nextImageDataUrl, setNextImageDataUrl] = useState('')
+
+  var r
+  var color = 0
+
+  // const setOverlayColors = () => {
+  //   const el = document.getElementById('overlay')
+  //   el.style.background = `linear-gradient(270deg, ${colors[0]}, ${colors[1]}, ${colors[2]}, ${colors[3]}`
+  //   el.style.backgroundSize = '400% 400%'
+  // }
+
+  function overlayInit() {
+    setRandomColor();
+    setInterval(function() {
+      setRandomColor();
+    }, 2000);
+  }
+
+  function setRandomColor() {
+    const el = document.getElementById('overlay')
+    switch (color) {
+      case 0:
+        el.style.backgroundColor = getSColor(random(1, 4))
+        break;
+      default:
+        el.style.backgroundColor = getSColor(random(1, 4))
+        break;
     }
   }
+
+  function random(min, max) {
+    var r = Math.round(Math.random() * (max - min) + parseInt(min));
+    console.log(r);
+    return r;
+  }
+
+  function random(min, max, ex) {
+    r = Math.round(Math.random() * (max - min) + parseInt(min));
+    if (r === ex) r++;
+    if (r > max) r = r - 2;
+    return r;
+  }
+
+  function getSColor(n) {
+    switch (n) {
+      case 1: color = 1; return colors[0];
+      case 2: color = 2; return colors[1];
+      case 3: color = 3; return colors[2];
+      case 4: color = 4; return colors[3];
+    }
+  }
+
+  // const clearParticle = () => {
+  //   var oldcanv = document.getElementsByTagName('canvas');
+  //   if (oldcanv.length) {
+  //       document.body.removeChild(oldcanv[0])
+  //   }
+  // }
+
+  // const fetchAsBlob = url => fetch(url)
+  //   .then(response => response.blob());
+
+  // const convertBlobToBase64 = blob => new Promise((resolve, reject) => {
+  //     const reader = new FileReader;
+  //     reader.onerror = reject;
+  //     reader.onload = () => {
+  //         resolve(reader.result);
+  //     };
+  //     reader.readAsDataURL(blob);
+  // });
+
+  // const getBase64Image = async (src) => {
+  //   console.log(src)
+  //   const newImage = new Image()
+  //   // newImage.setAttribute('crossOrigin', 'anonymous')
+  //   // newImage.crossOrigin = '*'
+  //   newImage.src = src
+  //   newImage.onload = function(){
+  //     const canvas = document.createElement("canvas");
+  //     canvas.width = this.width
+  //     canvas.height = this.height
+  //     const ctx = canvas.getContext('2d')
+  //     ctx.drawImage(newImage, 0, 0)
+  //     const dataUrl = canvas.toDataURL("image/png")
+  //     console.log(dataUrl)
+  //     setNextImageDataUrl(dataUrl)
+  //   }
+
+  // //   console.log(src)
+  // //   fetchAsBlob(src)
+  // //  .then(convertBlobToBase64)
+  // //  .then((result) => {
+  // //     console.log(result)
+  // //     setNextImageDataUrl(result)
+  // //   })
+  // }
 
   const startRecording = (stream, lengthInMs) => {
     recorder = new MediaRecorder(stream);
@@ -115,10 +205,11 @@ function App() {
 
   const stop = () => {
     const preview = document.getElementById('preview')
-    preview.srcObject.getTracks().forEach(track => track.stop());
+
+    preview.srcObject && preview.srcObject.getTracks && preview.srcObject.getTracks().forEach(track => track.stop());
     setIsRunning(false)
-    setImageCount(-1)
-    clearParticle()
+    setImageCount(0)
+    // clearParticle()
     setShowDownload(true)
   }
   
@@ -128,9 +219,9 @@ function App() {
     navigator.mediaDevices.getDisplayMedia({
       video: {
         cursor: 'never',
-        width: 1280,
-        height: 720,
-        frameRate: 30
+        width: 1920,
+        height: 1080,
+        frameRate: 100
       },
       audio: {
         echoCancellation: false,
@@ -147,7 +238,7 @@ function App() {
         return resolve(preview)
       });
     }).then(() => {
-      return startRecording(preview.captureStream(), aud.duration * 1000)
+      return startRecording(preview.captureStream(), (aud.duration * 1000) + 7500)
     }).then (recordedChunks => {
       let recordedBlob = new Blob(recordedChunks, { type: "video/webm" })
       downloadButton.href = URL.createObjectURL(recordedBlob)
@@ -159,7 +250,9 @@ function App() {
   const playAudio = () => {
     // TODO: remove this line
     // aud.currentTime = 240
-    aud.play()
+    setTimeout(() => {
+      aud.play()
+    }, 800)
     setAudioPlaying(true)
   }
 
@@ -194,14 +287,21 @@ function App() {
       if (duration !== compareDuration) {
         imageElements[i].style.animationDuration = delay/1000 + 's'
       } 
-      imageElements[i].style.backgroundImage = [ 'url(', decodeURIComponent( images[newCount] ), ')' ].join( '' );
+      // if (nextImageDataUrl) {
+      //   console.log(nextImageDataUrl)
+      //   imageElements[i].style.backgroundImage = [ 'url(', nextImageDataUrl, ')' ].join( '' );
+      // } else {
+        imageElements[i].style.backgroundImage = [ 'url(', decodeURIComponent( images[newCount] ), ')' ].join( '' );
+      // } 
     }
     if (text || text === '') {
-      window.setParticle(text, colors)
+      // window.setParticle(text, colors)
     }
     if (!audioPlaying) {
       playAudio()
     }
+    // load up next image
+    // getBase64Image(images[imageCount+1])
   }
 
   useInterval(() => {
@@ -241,8 +341,9 @@ function App() {
 
     stop()
     setShowDownload(false)
+    setIsRecording(false)
 
-    clearParticle()
+    // clearParticle()
   }
 
   const replay = () => {
@@ -251,9 +352,10 @@ function App() {
     aud.currentTime = 0 
     setAudioPlaying(false)
     setImageCount(0)
-    setShowDownload(false)
     stop()
+    setShowDownload(false)
     recordScreen()
+    setIsRunning(true)
   }
 
   const progressStep = () => {
@@ -340,12 +442,12 @@ function App() {
     
       document.body.appendChild(scriptTwo);
 
-      const scriptThree = document.createElement('script');
+      // const scriptThree = document.createElement('script');
     
-      scriptThree.src = "particle.js";
-      scriptThree.async = true;
+      // scriptThree.src = "particle.js";
+      // scriptThree.async = true;
     
-      document.body.appendChild(scriptThree); 
+      // document.body.appendChild(scriptThree); 
     }
     if (step === 3) {
       async function fetchData() {
@@ -360,11 +462,13 @@ function App() {
         }
       }
       fetchData()
+      // setOverlayColors()
     }
     if (step === 4) {
       setIsRunning(true)
       setStartReplay(true)
       setImageElements(document.getElementsByClassName('image'))
+      // overlayInit()
       if (!isRecording) {
         setIsRecording(true)
         recordScreen()
@@ -390,6 +494,10 @@ function App() {
       fetchObjects()
     }
   }, [objectIds])
+
+  const lyric = lyrics[imageCount - 1] === 'NA' ? '' : lyrics[imageCount-1]
+
+  let pTop = 300
   
   return (
     <>
@@ -471,13 +579,32 @@ function App() {
         </div>
       }
       {
-        step === 4 && lyrics[imageCount-1] !== 'NA' && imageCount > -1 &&
-        <div className='lyrics-background'/>
+        step === 4 && lyric && imageCount > -1 &&
+        <>
+          <div className='lyrics-background' />
+          { 
+            lyric && lyric.split('\n').map(t => {
+              pTop+=50
+              return (
+                <>
+                  <p style={{top: pTop, backgroundImage: `linear-gradient(270deg, ${colors[0]}, ${colors[1]}, ${colors[2]}, ${colors[3]}`}} className='lyrics'>{t}</p>
+                  { colors.filter(c => c !== 'black').length && (
+                    <>
+                      <p style={{top: pTop - 1}} className='lyrics-shadow-top'>{t}</p>
+                      <p style={{top: pTop + 1}} className='lyrics-shadow-bottom'>{t}</p>
+                    </>
+                  )}
+                </>
+              )
+            }) 
+          }
+        </>
       }
       {
         queryError && <p>Not enough art to make a cool video.  Please select a different department and/or search something else.</p>
       }
       <div style={{display: isRunning ? 'block' : 'none'}} className='kaleidoscope fadein'></div>
+      {/* <div id='overlay' style={{display: isRunning ? 'block' : 'none'}}></div> */}
       {step !==4 && <hr />}
       { step !== 4 && <>
         <Button 
@@ -536,14 +663,14 @@ function App() {
           >
             Replay
           </Button>
-          <Button 
+          {/* <Button 
             variant="contained" 
             color="primary" 
             disableElevation
             onClick={stop}
           >
             Stop Recording
-          </Button>
+          </Button> */}
         </div>
       </Slide>
     </div>
@@ -559,6 +686,9 @@ function App() {
           timeout={100000} //3 secs
         />
       </div>
+    } 
+    {
+      // step === 4 && <canvas style={{display: 'block'}} id='loadnext' />
     }
     {
       step === 4 && <video style={{display: 'none'}} id="preview" width="160" height="120" autoplay muted />

@@ -4,7 +4,7 @@ window.setParticle = (stringVal, colors) => {
         document.body.removeChild(oldcanv[0])
     }
     let particles = [];
-    let frequency = 100
+    let frequency = 40
     // Popolate particles
     setInterval(
         function(){
@@ -98,6 +98,7 @@ window.setParticle = (stringVal, colors) => {
         for(let i = 0; i<lines.length; i++){
             context.fillText(lines[i], canvas.width/2, canvas.height/2 + lineheight*i - (lineheight*(lines.length-1))/3);
         }
+        update()
     }
 
     function maskCanvas(){
