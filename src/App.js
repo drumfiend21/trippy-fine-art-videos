@@ -3,6 +3,8 @@ import './App.css'
 import './kal.css'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 
+import { stripHtml } from "string-strip-html"
+
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Select from '@material-ui/core/Select'
@@ -13,7 +15,10 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize'
 import Loader from 'react-loader-spinner'
 import Slide from '@material-ui/core/Slide'
 import { ChromePicker } from 'react-color'
+import { TwitterPicker } from 'react-color'
 import { Paper } from '@material-ui/core'
+
+import FineArtLogo from './img/fine-art-logo.png'
 
 const steps = [0, 1,2,3,4]
 
@@ -54,8 +59,9 @@ function App() {
 
   const [colors, setColors] = useState(['black', 'black', 'black', 'black'])
   const [showColorPicker, setShowColorPicker] = useState(null)
+  const [colorPickerType, setShowColorPickerType] = useState(0)
   const [lyrics, setLyrics] = useState([])
-  const [bpm, setBpm] = useState(10)
+  const [bpm, setBpm] = useState(null)
   const [delay, setDelay] = useState(10000)
 
   const [departments, setDepartments] = useState([])
@@ -321,7 +327,7 @@ function App() {
 
     setColors(['black', 'black', 'black', 'black'])
     setLyrics([])
-    setBpm(10)
+    setBpm(null)
     setDelay(10000)
 
     setDepartments([])
@@ -384,20 +390,24 @@ function App() {
   }
 
   const handleSearchStringOnChange = (e) => {
-    setSearchString(e.target.value)
+    const sanitized = stripHtml(e.target.value).result
+    setSearchString(sanitized)
     setValid(true)
   }
 
   const handleLyricsText = (e) => {
     const text = e.target.value
-    const splitted = text.split('\n\n').filter(s => s !== '')
+    const sanitized= stripHtml(text).result
+    const splitted = sanitized.split('\n\n').filter(s => s !== '')
     setValid(true)
     setLyrics(splitted)
   }
 
   const handleBpmChange = (e) => {
-    const bpm = e.target.value
-    const secondsPerBeat = 60/bpm
+    const newBpm = e.target.value
+    const sanitized = stripHtml(newBpm).result
+    setBpm(sanitized)
+    const secondsPerBeat = 60/sanitized
     const secondsPerBar = secondsPerBeat * 4
     const secondsPerFourBars = secondsPerBar * 4
     setDelay(secondsPerFourBars * 1000)
@@ -421,7 +431,7 @@ function App() {
   }
 
   const handleShowColorPicker = (i) => {
-    if(showColorPicker) {
+    if(showColorPicker === i) {
       setShowColorPicker(null)
     } else {
       setShowColorPicker(i)
@@ -509,16 +519,25 @@ function App() {
     }
   }, [objectIds])
 
+  useEffect(() => {
+    if (window.screen.width < 750) {
+      setShowColorPickerType(1)
+    } else {
+      setShowColorPickerType(0)
+    }
+  }, [window.screen.width])
+
   const lyric = lyrics[imageCount - 1] === 'NA' ? '' : lyrics[imageCount-1]
 
   let pTop = 44
   
   return (<>
-    <div className='container'>
-      <Paper elevation='10'>
+    { step !== 4 && <div className='container'>
+      <Paper elevation='10' className="container-paper">
+        <img className='fine-art-logo' src={FineArtLogo} />
         {
           step === -2 && <div className='greeting'>
-            <Paper elevation={0} style={{padding: '50px'}}>
+            <Paper elevation={0}>
               <h1>Fine Art Music Video Generator</h1>
               <p>As a musician, I wanted a easy way to make interesting music videos.</p>
               <p>This is a simple app I created that will let you do just that.</p>
@@ -535,10 +554,12 @@ function App() {
           <div>
             <p>Enter your lyrics.  Separate them with new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
             <TextareaAutosize
-              rowsMax={10}
+              rowsMax={12}
+              rows={12}
               aria-label="maximum height"
               defaultValue=""
               onChange={handleLyricsText}
+              className='text-area'
             />
             <p>Choose four colors for your lyric text animation.  Otherwise text will be black.</p>
             <div className='picker-container'>
@@ -555,14 +576,28 @@ function App() {
                     >
                       <p>{i+1}</p>
                     </Button>
-                    <Slide direction="right" in={showColorPicker === i} mountOnEnter unmountOnExit>
-                      <ChromePicker
-                        color={ colors[i] }
-                        onChangeComplete={ (c) => {
-                          handleColorChange(c, i)
-                        } }
-                      />
-                    </Slide>
+                    {
+                      colorPickerType === 0 && 
+                      <Slide direction="right" in={showColorPicker === i} mountOnEnter unmountOnExit>
+                        <ChromePicker
+                            color={ colors[i] }
+                            onChangeComplete={ (c) => {
+                              handleColorChange(c, i)
+                            } }
+                          />
+                      </Slide>
+                    }
+                    {
+                      colorPickerType === 1 && 
+                      <Slide direction="right" in={showColorPicker === i} mountOnEnter unmountOnExit>
+                        <TwitterPicker
+                          color={ colors[i] }
+                          onChangeComplete={ (c) => {
+                            handleColorChange(c, i)
+                          } }
+                        />
+                      </Slide>
+                    }
                   </>
                 )
               })}
@@ -573,7 +608,7 @@ function App() {
           <>
             <div>
               <p>Enter BPM</p>
-              <TextField id="standard-basic" label="BPM" onChange={handleBpmChange}/>
+              <TextField type='number' value={bpm} id="standard-basic" label="BPM" onChange={handleBpmChange}/>
             </div>
             <div>
               <p>Upload your MP3</p>
@@ -622,7 +657,7 @@ function App() {
         
         {/* <div id='overlay' style={{display: isRunning ? 'block' : 'none'}}></div> */}
         { step !== 4 && <div className='footer'>
-          <hr />
+          {/* <hr /> */}
           <div className='menu-button-container'>
             <Button 
               variant="contained" 
@@ -655,6 +690,7 @@ function App() {
       }
       </Paper>
     </div>
+    }
     {
         step === 4 && lyric && imageCount > -1 &&
         <>
@@ -688,6 +724,13 @@ function App() {
       className='hover-options' 
       onMouseLeave={() => setShowStepFourOptions(false)} 
       onMouseEnter={() => setShowStepFourOptions(true)}
+      onTouchStart={(e) => {
+        if (showStepFourOptions) {
+          setShowStepFourOptions(false)
+        } else {
+          setShowStepFourOptions(true)
+        }
+      }}
     >
       <Slide direction="down" in={showStepFourOptions} mountOnEnter unmountOnExit>
         <div className='hover-buttons-container'>
