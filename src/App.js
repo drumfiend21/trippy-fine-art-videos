@@ -13,6 +13,7 @@ import TextareaAutosize from '@material-ui/core/TextareaAutosize'
 import Loader from 'react-loader-spinner'
 import Slide from '@material-ui/core/Slide'
 import { ChromePicker } from 'react-color'
+import { Paper } from '@material-ui/core'
 
 const steps = [0, 1,2,3,4]
 
@@ -47,8 +48,8 @@ const wait = (delayInMS) => {
 }
 
 function App() {
-  const [step, setStep] = useState(-1)
-  const [valid, setValid] = useState(false)
+  const [step, setStep] = useState(-2)
+  const [valid, setValid] = useState(true)
   // const [src, setSrc] = useState('')
 
   const [colors, setColors] = useState(['black', 'black', 'black', 'black'])
@@ -314,7 +315,7 @@ function App() {
   // const [refetch, setRefetch] = useState(true)
 
   const startOver = () => {
-    setStep(-1)
+    setStep(-2)
     setValid(false)
 
     setColors(['#fff', '#fff', '#fff', '#fff'])
@@ -362,7 +363,7 @@ function App() {
     let newStep = step
     newStep++
     if (newStep > steps[steps.length-1]) {
-      newStep = -1
+      newStep = steps.length-1
     }
     setStep(newStep)
   }
@@ -370,8 +371,8 @@ function App() {
   const decrementStep = () => {
     let newStep = step
     newStep --
-    if (newStep < -1) {
-      newStep = -1
+    if (newStep < -2) {
+      newStep = -2
     }
     setStep(newStep)
   }
@@ -419,6 +420,10 @@ function App() {
   }
 
   useEffect(() => {
+    if (step === -2) {
+      setValid(true)
+    }
+    
     if (step === 0) {
       var head  = document.getElementsByTagName('head')[0];
       var link  = document.createElement('link');
@@ -501,6 +506,21 @@ function App() {
   
   return (
     <>
+      {
+        step === -2 && <div className='greeting'>
+          <Paper elevation={10} style={{padding: '50px'}}>
+            <h1>Fine Art Music Video Generator</h1>
+            <p>As a musician, I wanted a easy way to make interesting music videos.</p>
+            <p>This is a simple app I created that will let you do just that.</p>
+            <p>This generator draws on art from the Metropolitan Museum of Art</p>
+            <p>and creates psychedelic kaleidoscopic imagery.</p>
+            <p>All synced to your mp3 and lyrics.</p>
+            <p>Enjoy,</p>
+            <p>Mowgli Lion</p>
+            <a href='http://www.jungleej.wordpress.com'>Mowgli Music</a>
+          </Paper>
+        </div> 
+      }
       { step === -1 &&
         <div>
           <p>Enter your lyrics.  Separate them with new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
@@ -510,7 +530,7 @@ function App() {
             defaultValue=""
             onChange={handleLyricsText}
           />
-          <p>Choose four colors for your lyric text animation</p>
+          <p>Choose four colors for your lyric text animation.  Otherwise text will be black.</p>
           <div className='picker-container'>
             <ChromePicker
               color={ colors[0] }
@@ -611,6 +631,7 @@ function App() {
           variant="contained" 
           color="primary" 
           disableElevation
+          disabled={step === -2}
           onClick={() => {
             decrementStep()
             setValid(false)
