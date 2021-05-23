@@ -322,7 +322,7 @@ function App() {
       // window.setParticle(text, colors)
     }
     if (!audioPlaying) {
-      playAudio()
+      // playAudio()
     }
     // load up next image
     // getBase64Image(images[imageCount+1])
@@ -708,6 +708,12 @@ function App() {
                 progressStep()
                 setValid(false)
                 setQueryError(false)
+                if (step === 3 && !audioPlaying) {
+                  setAudioPlaying(true)
+                  setTimeout(() => {
+                    aud && aud.play()
+                  }, delay)
+                }
               }}
               disabled={!valid}
             >
@@ -814,9 +820,6 @@ function App() {
         >
           Download
         </a>
-    }
-    {
-      step === 3 && <p onClick={()=> aud && aud.play()}>play audio</p>
     }
   </>
   );
