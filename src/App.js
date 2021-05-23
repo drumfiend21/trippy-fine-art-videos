@@ -378,7 +378,8 @@ function App() {
     setImageCount(0)
     stop()
     setShowDownload(false)
-    if (!detectMob) {
+    const isMobile = detectMob()
+    if (!isMobile) {
       recordScreen()
     }
     setIsRunning(true)
@@ -513,7 +514,8 @@ function App() {
       // overlayInit()
       if (!isRecording) {
         setIsRecording(true)
-        if (!detectMob) {
+        const isMobile = detectMob()
+        if (!isMobile) {
           recordScreen()
         }
       }
@@ -667,7 +669,13 @@ function App() {
               !valid && <p>Preparing video...</p> 
             }
             {
-              valid && <p>Video ready.  Click continue!</p>
+              valid && <>
+                <p>Video ready.  Click continue!</p>
+                <p>If you are on a desktop browser, you will be prompted to share your screen.</p>
+                <p>This will record the video and audio and allow you to download at the end.</p>
+                <p>Select your browser tab and select "share audio".</p>
+                <p>If you don't want the download, just click cancel.</p>
+              </>
             }
           </div>
         }
