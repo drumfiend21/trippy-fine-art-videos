@@ -578,6 +578,8 @@ function App() {
               <p>Enjoy,</p>
               <p>Mowgli Lion</p>
               <a href='http://www.jungleej.wordpress.com'>Mowgli Music</a>
+              <p>Email: jungleerecords@gmail.com</p>
+              
             {/* </Paper> */}
           </div> 
         }
