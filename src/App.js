@@ -425,6 +425,11 @@ function App() {
   const handleBpmChange = (e) => {
     const newBpm = e.target.value
     const sanitized = stripHtml(newBpm).result
+    const number = parseFloat(sanitized)
+    if (isNaN(number) || typeof number !== 'number') {
+      setValid(false)
+      return setBpm(null)
+    }
     setBpm(sanitized)
     const secondsPerBeat = 60/sanitized
     const secondsPerBar = secondsPerBeat * 4
@@ -551,25 +556,29 @@ function App() {
 
   const lyric = lyrics[imageCount - 1] === 'NA' ? '' : lyrics[imageCount-1]
 
+  const useTextColor = colors.filter(c => c !== 'black').length > 0
+
   let pTop = 44
   
   return (<>
     { step !== 4 && <div className='container'>
       <Paper elevation='10' className="container-paper">
-        <img className='fine-art-logo' src={FineArtLogo} />
+        {/* <img className='fine-art-logo' src={FineArtLogo} /> */}
+        <div class="logo">
+          <b>F<span>in</span>e <span>A</span>rt <span>Vi</span>d<span>eos</span></b>
+        </div>
         {
           step === -2 && <div className='greeting'>
-            <Paper elevation={0}>
-              <h1>Fine Art Music Video Generator</h1>
-              <p>As a musician, I wanted a easy way to make interesting music videos.</p>
+            {/* <Paper elevation={0}> */}
+              {/* <h1>Fine Art Music Video Generator</h1> */}
+              <p>As a musician, I wanted an easy way to make interesting music videos.</p>
               <p>This is a simple app I created that will let you do just that.</p>
-              <p>This generator draws on art from the Metropolitan Museum of Art</p>
-              <p>and creates psychedelic kaleidoscopic imagery.</p>
+              <p>This generator draws on art from the Metropolitan Museum of Art and creates hypnotic kaleidoscopic imagery.</p>
               <p>All synced to your mp3 and lyrics.</p>
               <p>Enjoy,</p>
               <p>Mowgli Lion</p>
               <a href='http://www.jungleej.wordpress.com'>Mowgli Music</a>
-            </Paper>
+            {/* </Paper> */}
           </div> 
         }
         { step === -1 &&
@@ -594,7 +603,7 @@ function App() {
                       variant="contained" 
                       color="primary" 
                       disableElevation
-                      style={{backgroundColor: colors[i]}}
+                      style={{backgroundColor: colors[i], border: '5px solid white'}}
                     >
                       <p>{i+1}</p>
                     </Button>
@@ -630,7 +639,16 @@ function App() {
           <>
             <div>
               <p>Enter BPM</p>
-              <TextField type='number' value={bpm} id="standard-basic" label="BPM" onChange={handleBpmChange}/>
+              {/* <TextareaAutosize
+                rowsMax={1}
+                rows={1}
+                aria-label="maximum height"
+                value={bpm}
+                onChange={handleBpmChange}
+              /> */}
+              <div className='text-field-wrapper'>
+                <TextField inputProps={{backgroundColor: 'white'}} type='number' value={bpm} id="standard-basic" label="BPM" onChange={handleBpmChange}/>
+              </div>
             </div>
             <div>
               <p>Upload your MP3</p>
@@ -660,7 +678,9 @@ function App() {
         { step === 2 &&
           <div>
             <p>Enter a search string</p>
-            <TextField id="standard-basic" label="Search string" onChange={handleSearchStringOnChange}/>
+            <div className='text-field-wrapper'>
+              <TextField color='primary' id="standard-basic" label="Search string" onChange={handleSearchStringOnChange}/>
+            </div>
           </div>
         }
         { step === 3 &&
@@ -730,16 +750,17 @@ function App() {
           <div className='lyrics-background' />
           { 
             lyric && lyric.split('\n').map(t => {
-              pTop+=7
+              pTop+=7.5
               return (
                 <>
                   <p style={{top: pTop + '%', backgroundImage: `linear-gradient(270deg, ${colors[0]}, ${colors[1]}, ${colors[2]}, ${colors[3]}`}} className='lyrics'>{t}</p>
-                  { colors.filter(c => c !== 'black').length && (
+                  { useTextColor ? (
                     <>
                       <p style={{top: pTop + '%'}} className='lyrics-shadow-top'>{t}</p>
                       <p style={{top: pTop + '%'}} className='lyrics-shadow-bottom'>{t}</p>
                     </>
-                  )}
+                  ) : null
+                  }
                 </>
               )
             }) 
