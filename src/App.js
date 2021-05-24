@@ -676,20 +676,22 @@ function App() {
         { step === 1 &&
           <div>
             <p>Choose an art department from the MET</p>
-            <FormControl className='formControl'>
-              <InputLabel id="demo-simple-select-label">Department</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={departmentId}
-                onChange={handleDepartmentOnChange}
-              >
-                <MenuItem value={null}>ALL DEPARTMENTS</MenuItem>
-                {/* {departments.map(d => {
-                  return (<MenuItem value={d.departmentId}>{d.displayName}</MenuItem>)
-                })} */}
-              </Select>
-            </FormControl>
+            <div className='text-field-wrapper'>
+              <FormControl className='formControl'>
+                <InputLabel id="demo-simple-select-label">Department</InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={departmentId}
+                  onChange={handleDepartmentOnChange}
+                >
+                  <MenuItem value={null}>ALL DEPARTMENTS</MenuItem>
+                  {/* {departments.map(d => {
+                    return (<MenuItem value={d.departmentId}>{d.displayName}</MenuItem>)
+                  })} */}
+                </Select>
+              </FormControl>
+            </div>
           </div>
         }
         { step === 2 &&
