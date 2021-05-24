@@ -821,7 +821,7 @@ function App() {
       <div className='replay-countdown'>
         <Loader
           type="ThreeDots"
-          color="white"
+          color="black"
           height={100}
           width={100}
           timeout={100000} //3 secs
