@@ -17,6 +17,8 @@ import Slide from '@material-ui/core/Slide'
 import { ChromePicker } from 'react-color'
 import { TwitterPicker } from 'react-color'
 import { Paper } from '@material-ui/core'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Switch from '@material-ui/core/Switch'
 
 import FineArtLogo from './img/fine-art-logo.png'
 
@@ -77,6 +79,7 @@ function App() {
   const [showColorPicker, setShowColorPicker] = useState(null)
   const [colorPickerType, setShowColorPickerType] = useState(0)
   const [lyrics, setLyrics] = useState([])
+  const [hideLyrics, setHideLyrics] = useState(false)
   const [bpm, setBpm] = useState(null)
   const [delay, setDelay] = useState(10000)
 
@@ -583,7 +586,7 @@ function App() {
             {/* </Paper> */}
           </div> 
         }
-        { step === -1 &&
+        { step === -1 && !hideLyrics &&
           <div>
             <p>Enter your lyrics.  Separate them with new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
             <TextareaAutosize
@@ -635,6 +638,18 @@ function App() {
                 )
               })}
             </div>
+          </div>
+        }
+        {
+          step === -1 && 
+          <div className='lyrics-switch-container'>
+            <FormControlLabel
+              control={<Switch checked={hideLyrics} onChange={(e) => {
+                setHideLyrics(e.target.checked)
+                setValid(true)
+              }} name="Hide Lyrics" />}
+              label="Hide Lyrics"
+            />
           </div>
         }
         { step === 0 &&
@@ -747,7 +762,7 @@ function App() {
     </div>
     }
     {
-        step === 4 && lyric && imageCount > -1 &&
+        step === 4 && !hideLyrics && lyric && imageCount > -1 &&
         <>
           <div className='lyrics-background' />
           { 

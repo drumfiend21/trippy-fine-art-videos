@@ -506,3 +506,11 @@ a {
   display: inline-block;
   border-radius: 2px;
 }
+
+.lyrics-switch-container {
+  display: inline-block;
+  background-color: white;
+  padding: 15px;
+  margin-top: 20px;
+  border-radius: 10px;
+}
