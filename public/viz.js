@@ -4,7 +4,7 @@
  * Music by Term and Conditions Mixes
  * https://soundcloud.com/term-and-conditions-mixes/new-year-dubstep-minimix
 */
-window.viz = () => {
+window.viz = (colors) => {
     var media = [
         "https://s3-us-west-2.amazonaws.com/s.cdpn.io/9473/new_year_dubstep_minimix.mp3"
     ],
@@ -16,26 +16,26 @@ window.viz = () => {
     background_gradient_color_2 = "black",
     background_gradient_color_3 = "black",
 
-    stars_color = "white",
-    stars_color_2 = "white",
-    stars_color_special = "white",
+    stars_color = colors[0] === 'black' ? "white" : colors[0],
+    stars_color_2 = colors[1] === 'black' ? "white" : colors[1],
+    stars_color_special = colors[2] === 'black' ? "white" : colors[2],
     TOTAL_STARS = 1500,
     STARS_BREAK_POINT = 140,
     stars = [],
 
     waveform_color = "rgba(29, 36, 57, 0.05)",
     waveform_color_2 = "rgba(0,0,0,0)",
-    waveform_line_color = "white",
-    waveform_line_color_2 = "white",
-    waveform_tick = 0.05,
+    waveform_line_color = colors[3] === 'black' ? "white" : colors[3],
+    waveform_line_color_2 = colors[3] === 'black' ? "white" : colors[3],
+    waveform_tick = 0.000001,
     TOTAL_POINTS = fftSize / 2,
     points = [],
     avg_circle,
 
     bubble_avg_color = "rgba(29, 36, 57, 0.1)",
     bubble_avg_color_2 = "rgba(29, 36, 57, 0.05)",
-    bubble_avg_line_color = "rgba(77, 218, 248, 1)",
-    bubble_avg_line_color_2 = "rgba(77, 218, 248, 1)",
+    bubble_avg_line_color = colors[2] === 'black' ? "white" : colors[2],
+    bubble_avg_line_color_2 = colors[3] === 'black' ? "white" : colors[3],
     bubble_avg_tick = 0.001,
     TOTAL_AVG_POINTS = 64,
     AVG_BREAK_POINT = 100,

@@ -250,7 +250,8 @@ function App() {
         cursor: 'never',
         width: 1920,
         height: 1080,
-        frameRate: 100
+        // frameRate: 100
+        frameRate: 300
       },
       audio: {
         echoCancellation: false,
@@ -469,7 +470,7 @@ function App() {
       aud = new Audio(str)
     }
     reader.readAsDataURL(f.files[0])
-    window.viz()
+    window.viz(colors)
   }
 
   const handleShowColorPicker = (i) => {
@@ -683,16 +684,18 @@ function App() {
           </div>
         }
         {
-          step === -1 &&
-          <div className='lyrics-switch-container'>
-            <FormControlLabel
-              control={<Switch checked={showViz} onChange={(e) => {
-                setShowViz(e.target.checked)
-                setValid(true)
-              }} name="Show Equalizer Visualization" />}
-              label="Show Equalizer Visualization"
-            />
-          </div>
+          step === -1 && <>
+            <div className='lyrics-switch-container'>
+              <FormControlLabel
+                control={<Switch checked={showViz} onChange={(e) => {
+                  setShowViz(e.target.checked)
+                  setValid(true)
+                }} name="Show Equalizer Visualization" />}
+                label="Show Equalizer Visualization"
+              />
+            </div>
+            <p>Colors will be inherited from your text color selection.</p>
+          </>
         }
         { step === 0 &&
           <>
