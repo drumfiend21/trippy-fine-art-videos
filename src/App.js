@@ -632,7 +632,7 @@ function App() {
               vid.pause()
               vid.currentTime = 0;
             }}>x</p>
-            <video className='demo' style={{display: showDemo ? 'block' : 'none'}} controls>
+            <video className='demo' style={{display: showDemo ? 'block' : 'none'}} controls playsinline>
               <source src="https://fineartmusicvideo.s3.amazonaws.com/Demo.webm" type="video/webm" />
             </video>
             {/* </Paper> */}
