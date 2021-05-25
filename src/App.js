@@ -795,6 +795,8 @@ function App() {
                 if (step === 3 && !audioPlaying) {
                     if (showViz) {
                       window.primeViz()
+                      window.asource.start();
+                      window.asource.stop();
                     } else {
                       aud && aud.play()
                       aud && aud.pause()

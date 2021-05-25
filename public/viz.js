@@ -222,16 +222,18 @@ window.viz = (colors) => {
     }
 
     window.primeViz = () => {
-        playing = true;
+        // playing = true;
         startedAt = pausedAt ? Date.now() - pausedAt : Date.now();
         asource = null;
         asource = actx.createBufferSource();
         asource.buffer = audio_buffer;
         asource.loop = false;
         asource.connect(gainNode);
-        asource.start();
-        playing = false
-        asource.stop()
+        window.asource = asource;
+        //call start and stop from app.js to prime
+        // asource.start()
+        // playing = false
+        // asource.stop()
     }
 
     window.stopViz = function pauseAudio() {
