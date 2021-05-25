@@ -276,6 +276,7 @@ window.viz = (colors) => {
         ctx.globalCompositeOperation = "source-over";
         ctx.fillStyle = gradient;
         ctx.fillRect(0, 0, w, h);
+        // ctx.clearRect(0, 0, w, h);
         ctx.fill();
         ctx.closePath();
 
@@ -294,7 +295,8 @@ window.viz = (colors) => {
 
             p.dx += p.ddx;
             p.dy += p.ddy;
-            p.radius = 0.2 + ((p.max_depth - p.z) * .1);
+            // p.radius = 0.2 + ((p.max_depth - p.z) * .1);
+            p.radius = 0.8 + ((p.max_depth - p.z) * .1);
 
             if (p.x < -cx || p.x > cx || p.y < -cy || p.y > cy) {
                 stars[i] = new Star();
