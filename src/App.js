@@ -688,6 +688,7 @@ function App() {
           step === -1 && <>
             <div className='lyrics-switch-container'>
               <FormControlLabel
+                disabled={detectMob()}
                 control={<Switch checked={showViz} onChange={(e) => {
                   setShowViz(e.target.checked)
                   setValid(true)
@@ -696,6 +697,7 @@ function App() {
               />
             </div>
             <p>Colors will be inherited from your text color selection.</p>
+            <p>Only works on desktop browsers.</p>
           </>
         }
         { step === 0 &&
