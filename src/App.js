@@ -484,7 +484,7 @@ function App() {
   }
 
   useEffect(() => {
-    if (step === -2) {
+    if (step === -3) {
       setValid(true)
       const scriptFour = document.createElement('script');
     
