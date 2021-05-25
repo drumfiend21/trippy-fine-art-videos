@@ -197,10 +197,6 @@ window.viz = (colors) => {
                 createPoints();
                 hideLoader();
                 showToggleControls();
-                window.asource = asource
-                window.actx = actx
-                window.audio_buffer = audio_buffer
-                window.gainNode = gainNode
                 // playAudio();
             });
 
@@ -215,12 +211,12 @@ window.viz = (colors) => {
     window.playViz = function playAudio() {
         playing = true;
         startedAt = pausedAt ? Date.now() - pausedAt : Date.now();
-        window.asource = null;
-        window.asource = actx.createBufferSource();
-        window.asource.buffer = audio_buffer;
-        window.asource.loop = false;
-        window.asource.connect(gainNode);
-        window.asource.start();
+        asource = null;
+        asource = actx.createBufferSource();
+        asource.buffer = audio_buffer;
+        asource.loop = false;
+        asource.connect(gainNode);
+        asource.start();
 
         animate();
     }
