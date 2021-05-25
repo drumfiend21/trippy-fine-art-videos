@@ -507,7 +507,7 @@ function App() {
       const script = document.createElement('script');
   
       script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
-      script.async = true;
+      script.async = false;
     
       document.body.appendChild(script);
 
