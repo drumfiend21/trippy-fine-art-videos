@@ -796,7 +796,7 @@ function App() {
                     if (showViz) {
                       window.primeViz()
                       window.asource.start();
-                      window.asource.stop();
+                      // window.asource.stop();
                     } else {
                       aud && aud.play()
                       aud && aud.pause()
