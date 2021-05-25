@@ -12,6 +12,8 @@ Enjoy,
 
 Mowgli Lion
 
+Special thanks to Noel Delgado (@pixelia_me) for the incredible equalization vizualizer, and to whomever was the original author of the kaleidoscope css (see kal.js) used in this app.  If that was you, reach out!  I'll add your name. 
+
 Copyright 2021 Siddharth K Joshi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
