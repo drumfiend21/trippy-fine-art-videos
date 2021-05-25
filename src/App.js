@@ -16,7 +16,7 @@ import Loader from 'react-loader-spinner'
 import Slide from '@material-ui/core/Slide'
 import { ChromePicker } from 'react-color'
 import { TwitterPicker } from 'react-color'
-import { Paper } from '@material-ui/core'
+import { LinearProgress, Paper } from '@material-ui/core'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 
@@ -29,6 +29,19 @@ let images = []
 let aud
 let recorder
 let data = []
+
+const defaultLyrics =
+`Start typing your lyrics here,
+These are sample lyrics,
+Notice that there are commas for each line, 
+These four lines will be displayed for four beats,
+
+These lyrics will be displayed,
+In the next four beats,
+If there are no lyrics for 4 beats,
+Enter NA on a new paragraph,
+
+NA`
 
 function detectMob() {
   const toMatch = [
@@ -640,12 +653,12 @@ function App() {
         }
         { step === -2 && !hideLyrics &&
           <div>
-            <p>Enter your lyrics.  Separate them with new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
+            <p>Enter your lyrics.  Separate lyrics with commas and new lines, and new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
             <TextareaAutosize
               rowsMax={12}
               rows={12}
               aria-label="maximum height"
-              defaultValue=""
+              // placeholder={defaultLyrics}
               onChange={handleLyricsText}
               className='text-area'
             />
