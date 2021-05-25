@@ -22,7 +22,7 @@ import Switch from '@material-ui/core/Switch'
 
 import FineArtLogo from './img/fine-art-logo.png'
 
-const steps = [0, 1,2,3,4]
+const steps = [-2,-1,0,1,2,3,4]
 
 let images = []
 
@@ -71,7 +71,7 @@ const wait = (delayInMS) => {
 }
 
 function App() {
-  const [step, setStep] = useState(-2)
+  const [step, setStep] = useState(-3)
   const [valid, setValid] = useState(true)
   // const [src, setSrc] = useState('')
 
@@ -82,6 +82,8 @@ function App() {
   const [hideLyrics, setHideLyrics] = useState(false)
   const [bpm, setBpm] = useState(null)
   const [delay, setDelay] = useState(10000)
+
+  const [showViz, setShowViz] = useState(true)
 
   const [departments, setDepartments] = useState([])
   const [departmentId, setDepartmentId] = useState('')
@@ -278,7 +280,11 @@ function App() {
     // TODO: remove this line
     // aud.currentTime = 240
     setTimeout(() => {
-      aud.play()
+      if (showViz) {
+        window.playViz()
+      } else {
+        aud.play()
+      }     
     }, 800)
     setAudioPlaying(true)
   }
@@ -341,8 +347,8 @@ function App() {
   // const [refetch, setRefetch] = useState(true)
 
   const startOver = () => {
-    setStep(-2)
     setValid(false)
+    setStep(-2)
 
     setColors(['black', 'black', 'black', 'black'])
     setLyrics([])
@@ -362,8 +368,12 @@ function App() {
     setIsRunning(false)
     images = []
 
-    aud.pause()
-    aud = null
+    if (showViz) {
+      window.stopViz()
+    } else {
+      aud.pause()
+      aud = null
+    }
     setAudioPlaying(false)
 
     stop()
@@ -375,8 +385,12 @@ function App() {
 
   const replay = () => {
     setStartReplay(true)
-    aud.pause()
-    aud.currentTime = 0 
+    if (showViz) {
+      window.stopViz()
+    } else {
+      aud.pause()
+      aud.currentTime = 0 
+    }
     setAudioPlaying(false)
     setImageCount(0)
     stop()
@@ -400,8 +414,8 @@ function App() {
   const decrementStep = () => {
     let newStep = step
     newStep --
-    if (newStep < -2) {
-      newStep = -2
+    if (newStep < -3) {
+      newStep = -3
     }
     setStep(newStep)
   }
@@ -455,6 +469,7 @@ function App() {
       aud = new Audio(str)
     }
     reader.readAsDataURL(f.files[0])
+    window.viz()
   }
 
   const handleShowColorPicker = (i) => {
@@ -468,8 +483,16 @@ function App() {
   useEffect(() => {
     if (step === -2) {
       setValid(true)
-    }
+      const scriptFour = document.createElement('script');
     
+      scriptFour.src = "viz.js";
+      scriptFour.async = true;
+    
+      document.body.appendChild(scriptFour);
+    }
+    if (step === -1) {
+      setValid(true)
+    }
     if (step === 0) {
       var head  = document.getElementsByTagName('head')[0];
       var link  = document.createElement('link');
@@ -499,6 +522,13 @@ function App() {
       // scriptThree.async = true;
     
       // document.body.appendChild(scriptThree); 
+
+      // const scriptFour = document.createElement('script');
+    
+      // scriptFour.src = "viz.js";
+      // scriptFour.async = true;
+    
+      // document.body.appendChild(scriptFour);
     }
     if (step === 3) {
       async function fetchData() {
@@ -571,7 +601,7 @@ function App() {
           <b>F<span>in</span>e <span>A</span>rt <span>Vi</span>d<span>eos</span></b>
         </div>
         {
-          step === -2 && <div className='greeting'>
+          step === -3 && <div className='greeting'>
             {/* <Paper elevation={0}> */}
               {/* <h1>Fine Art Music Video Generator</h1> */}
               <p>As a musician, I wanted an easy way to make interesting music videos.</p>
@@ -586,7 +616,7 @@ function App() {
             {/* </Paper> */}
           </div> 
         }
-        { step === -1 && !hideLyrics &&
+        { step === -2 && !hideLyrics &&
           <div>
             <p>Enter your lyrics.  Separate them with new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
             <TextareaAutosize
@@ -641,7 +671,7 @@ function App() {
           </div>
         }
         {
-          step === -1 && 
+          step === -2 && 
           <div className='lyrics-switch-container'>
             <FormControlLabel
               control={<Switch checked={hideLyrics} onChange={(e) => {
@@ -649,6 +679,18 @@ function App() {
                 setValid(true)
               }} name="Hide Lyrics" />}
               label="Hide Lyrics"
+            />
+          </div>
+        }
+        {
+          step === -1 &&
+          <div className='lyrics-switch-container'>
+            <FormControlLabel
+              control={<Switch checked={showViz} onChange={(e) => {
+                setShowViz(e.target.checked)
+                setValid(true)
+              }} name="Show Equalizer Visualization" />}
+              label="Show Equalizer Visualization"
             />
           </div>
         }
@@ -787,6 +829,7 @@ function App() {
         </>
       }
     <div style={{display: isRunning ? 'block' : 'none'}} className='kaleidoscope fadein'></div>
+    <canvas style={{display: isRunning && showViz ? 'block' : 'none'}} className='viz' />
     {
       step === 4 && showHelper && <div className='helper-container'>
         <p>Hover Here for Options</p>
