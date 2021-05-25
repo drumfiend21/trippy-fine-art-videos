@@ -798,7 +798,7 @@ function App() {
               variant="contained" 
               color="primary" 
               disableElevation
-              disabled={step === -2}
+              disabled={step === -3}
               onClick={() => {
                 decrementStep()
                 setValid(false)
