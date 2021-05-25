@@ -433,13 +433,13 @@ canvas {
   text-shadow: 0 -40px 100px, 0 0 2px, 0 0 1em #ff4444, 0 0 0.5em #ff4444, 0 0 0.1em #ff4444, 0 10px 3px #000;
 }
 
-@media only screen and (max-width: 922px) {
+@media only screen and (max-width: 1030px) {
   .logo b {
     font: 400 5vh "Vibur";
   }
 }
 
-@media only screen and (min-width: 922px) {
+@media only screen and (min-width: 1030px) {
   .logo b {
     font: 400 10vh "Vibur";
   }
@@ -525,4 +525,30 @@ a {
   width: 100%;
   /* opacity: 0.45; */
   opacity: 0.55;
+}
+
+.demo {
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  top: 1%;
+  opacity: 1;
+  width: 90%;
+  background-color: white;
+  z-index: 3;
+  border: 3px solid white;
+}
+
+.close-demo {
+  left: 90%;
+  color: white;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 1%;
+  z-index: 4;
+  cursor: pointer;
+  font-size: 20px;
 }

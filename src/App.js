@@ -74,6 +74,7 @@ function App() {
   const [step, setStep] = useState(-3)
   const [valid, setValid] = useState(true)
   // const [src, setSrc] = useState('')
+  const [showDemo, setShowDemo] = useState(false)
 
   const [colors, setColors] = useState(['black', 'black', 'black', 'black'])
   const [showColorPicker, setShowColorPicker] = useState(null)
@@ -614,7 +615,26 @@ function App() {
               <p>Mowgli Lion</p>
               <a href='http://www.jungleej.wordpress.com'>Mowgli Music</a>
               <p>Email: jungleerecords@gmail.com</p>
-              
+              <Button 
+              variant="contained" 
+              color="primary" 
+              disableElevation
+              disabled={step === -2}
+              onClick={() => {
+                setShowDemo(true)
+              }}
+            >
+              See a Demo
+            </Button>
+            <p className='close-demo' style={{display: showDemo ? 'block' : 'none'}} onClick={() => {
+              setShowDemo(false)
+              const vid = document.getElementsByClassName('demo')[0]
+              vid.pause()
+              vid.currentTime = 0;
+            }}>x</p>
+            <video className='demo' style={{display: showDemo ? 'block' : 'none'}} controls>
+              <source src="https://fineartmusicvideo.s3.amazonaws.com/Demo.webm" type="video/webm" />
+            </video>
             {/* </Paper> */}
           </div> 
         }
