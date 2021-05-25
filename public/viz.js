@@ -221,6 +221,19 @@ window.viz = (colors) => {
         animate();
     }
 
+    window.primeViz = () => {
+        playing = true;
+        startedAt = pausedAt ? Date.now() - pausedAt : Date.now();
+        asource = null;
+        asource = actx.createBufferSource();
+        asource.buffer = audio_buffer;
+        asource.loop = false;
+        asource.connect(gainNode);
+        asource.start();
+        playing = false
+        asource.stop()
+    }
+
     window.stopViz = function pauseAudio() {
         playing = false;
         // pausedAt = Date.now() - startedAt;

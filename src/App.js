@@ -793,9 +793,13 @@ function App() {
                 setValid(false)
                 setQueryError(false)
                 if (step === 3 && !audioPlaying) {
-                    aud && aud.play()
-                    aud && aud.pause()
-                    aud.currentTime = 0
+                    if (showViz) {
+                      window.primeViz()
+                    } else {
+                      aud && aud.play()
+                      aud && aud.pause()
+                      aud.currentTime = 0
+                    }
                 }
               }}
               disabled={!valid}
