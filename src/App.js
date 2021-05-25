@@ -697,7 +697,7 @@ function App() {
               />
             </div>
             <p>Colors will be inherited from your text color selection.</p>
-            <p>Only works on desktop browsers.</p>
+            <p>Only available on desktop browsers.</p>
           </>
         }
         { step === 0 &&
