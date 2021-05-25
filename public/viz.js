@@ -227,9 +227,16 @@ window.viz = (colors) => {
         asource = null;
         asource = actx.createBufferSource();
         asource.buffer = audio_buffer;
-        asource.loop = false;
-        asource.connect(gainNode);
-        window.asource = asource;
+
+        asource.onended = function() {
+            asource.disconnect();
+        };
+        asource.start(actx.currentTime);
+        asource.stop(actx.currentTime + asource.buffer.duration);
+        asource.connect(actx.destination);
+        // asource.loop = false;
+        // asource.connect(gainNode);
+        // window.asource = asource;
         //call start and stop from app.js to prime
         // asource.start()
         // playing = false
