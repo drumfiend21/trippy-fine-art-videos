@@ -471,6 +471,7 @@ function App() {
     }
     reader.readAsDataURL(f.files[0])
     window.viz(colors)
+    window.primeViz()
   }
 
   const handleShowColorPicker = (i) => {
@@ -794,7 +795,7 @@ function App() {
                 setQueryError(false)
                 if (step === 3 && !audioPlaying) {
                     if (showViz) {
-                      window.primeViz()
+                      // window.primeViz()
                       window.asource.start();
                       // window.asource.stop();
                     } else {
