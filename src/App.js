@@ -83,7 +83,7 @@ function App() {
   const [bpm, setBpm] = useState(null)
   const [delay, setDelay] = useState(10000)
 
-  const [showViz, setShowViz] = useState(true)
+  const [showViz, setShowViz] = useState(false)
 
   const [departments, setDepartments] = useState([])
   const [departmentId, setDepartmentId] = useState('')
