@@ -795,9 +795,14 @@ function App() {
                 setQueryError(false)
                 if (step === 3 && !audioPlaying) {
                     if (showViz) {
-                      window.primeViz()
-                      // window.asource.start();
-                      // window.asource.stop();
+                      // window.primeViz()
+                      window.asource = null;
+                      window.asource = window.actx.createBufferSource();
+                      window.asource.buffer = window.audio_buffer;
+                      window.asource.loop = false;
+                      window.asource.connect(window.gainNode);
+                      window.asource.start();
+                      window.asource.stop();
                     } else {
                       aud && aud.play()
                       aud && aud.pause()
