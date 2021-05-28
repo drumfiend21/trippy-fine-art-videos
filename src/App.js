@@ -850,8 +850,10 @@ function App() {
         step === -3 &&
         <div className='support'>
           <p>Currently supported on: </p>
-          <img className='support-image' src={ChromeLogo} />
-          <img className='support-image' src={iosLogo} />
+          <div className='support-images'>
+            <img className='support-image' src={ChromeLogo} />
+            <img className='support-image' src={iosLogo} />
+          </div>
         </div>
       }
       </Paper>
