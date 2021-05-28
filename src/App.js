@@ -21,7 +21,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 
 import ChromeLogo from './img/chrome.png'
-import iosLogo from './img/ios.jpeg'
+import iosLogo from './img/ios.png'
 
 const steps = [-2,-1,0,1,2,3,4]
 
@@ -640,11 +640,6 @@ function App() {
             >
               See a Demo
             </Button>
-            <div className='support'>
-              <p>Currently supported on: </p>
-              <img className='support-image' src={ChromeLogo} />
-              <img className='support-image' src={iosLogo} />
-            </div>
             <p className='close-demo' style={{display: showDemo ? 'block' : 'none'}} onClick={() => {
               setShowDemo(false)
               const vid = document.getElementsByClassName('demo')[0]
@@ -849,6 +844,14 @@ function App() {
               Continue
             </Button>
           </div>
+        </div>
+      }
+      {
+        step === -3 &&
+        <div className='support'>
+          <p>Currently supported on: </p>
+          <img className='support-image' src={ChromeLogo} />
+          <img className='support-image' src={iosLogo} />
         </div>
       }
       </Paper>
