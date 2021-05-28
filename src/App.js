@@ -20,7 +20,6 @@ import { LinearProgress, Paper } from '@material-ui/core'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 
-import FineArtLogo from './img/fine-art-logo.png'
 import ChromeLogo from './img/chrome.png'
 import iosLogo from './img/ios.jpeg'
 
