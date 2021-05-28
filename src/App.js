@@ -4,6 +4,7 @@ import './kal.css'
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css'
 
 import { stripHtml } from "string-strip-html"
+import { detect } from 'detect-browser'
 
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
@@ -59,6 +60,8 @@ function detectMob() {
       return navigator.userAgent.match(toMatchItem);
   });
 }
+
+const browser = detect()
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -722,7 +725,7 @@ function App() {
           step === -1 && <>
             <div className='lyrics-switch-container'>
               <FormControlLabel
-                disabled={detectMob()}
+                disabled={detectMob() || browser.name !== 'chrome'}
                 control={<Switch checked={showViz} onChange={(e) => {
                   setShowViz(e.target.checked)
                   setValid(true)
@@ -731,7 +734,7 @@ function App() {
               />
             </div>
             <p>Colors will be inherited from your text color selection.</p>
-            <p>Only available on desktop browsers.</p>
+            <p>Only available on Chrome desktop browser.</p>
           </>
         }
         { step === 0 &&
