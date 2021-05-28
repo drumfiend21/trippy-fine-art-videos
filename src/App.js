@@ -21,6 +21,8 @@ import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
 
 import FineArtLogo from './img/fine-art-logo.png'
+import ChromeLogo from './img/chrome.png'
+import iosLogo from './img/ios.jpeg'
 
 const steps = [-2,-1,0,1,2,3,4]
 
@@ -505,6 +507,13 @@ function App() {
       scriptFour.async = true;
     
       document.body.appendChild(scriptFour);
+
+      const script = document.createElement('script');
+  
+      script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
+      script.async = false;
+    
+      document.body.appendChild(script);
     }
     if (step === -1) {
       setValid(true)
@@ -517,13 +526,6 @@ function App() {
       link.href = 'https://fonts.googleapis.com/css?family=Montserrat:200,300,400,600';
       link.media = 'all';
       head.appendChild(link);
-
-      const script = document.createElement('script');
-  
-      script.src = "https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js";
-      script.async = false;
-    
-      document.body.appendChild(script);
 
       const scriptTwo = document.createElement('script');
     
@@ -639,6 +641,11 @@ function App() {
             >
               See a Demo
             </Button>
+            <div className='support'>
+              <p>Currently supported on: </p>
+              <img className='support-image' src={ChromeLogo} />
+              <img className='support-image' src={iosLogo} />
+            </div>
             <p className='close-demo' style={{display: showDemo ? 'block' : 'none'}} onClick={() => {
               setShowDemo(false)
               const vid = document.getElementsByClassName('demo')[0]

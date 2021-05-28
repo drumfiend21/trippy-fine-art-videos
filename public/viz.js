@@ -65,7 +65,7 @@ window.viz = (colors) => {
 
     rotation = 0,
     //   msgElement = document.querySelector('#loading .msg'),
-    avg, ctx, actx, asource, gainNode, analyser, frequencyData, frequencyDataLength, timeData;
+    avg, ctx, actx, asource, gainNode, analyser, frequencyData, frequencyDataLength, timeData, audioFile;
 
     // var startElement = document.querySelector('#loadcontrol');
     // var loadingElement = document.querySelector('#loading');
@@ -119,6 +119,7 @@ window.viz = (colors) => {
     //   msgElement.textContent = text;
     }
 
+    // original code, doesn't work
     // function initializeAudio() {
     //     asource = actx.createBufferSource();
     //     var xmlHTTP = new XMLHttpRequest();
@@ -168,6 +169,7 @@ window.viz = (colors) => {
     //     xmlHTTP.send();
     // }
 
+    // this works on chrome
     function initializeAudio() {
         asource = actx.createBufferSource();
 
@@ -208,6 +210,8 @@ window.viz = (colors) => {
         playing ? pauseAudio() : playAudio();
     }
 
+    
+    //this works on Chrome
     window.playViz = function playAudio() {
         playing = true;
         startedAt = pausedAt ? Date.now() - pausedAt : Date.now();
