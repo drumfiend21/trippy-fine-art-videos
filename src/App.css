@@ -414,7 +414,7 @@ canvas {
 }
 .logo {
   text-align: center;
-  width: 65%;
+  width: 75%;
   height: 100px;
   margin: auto;
   padding-top: 50px;
@@ -572,4 +572,33 @@ a {
   height: 40px;
   border-radius: 15px;
   margin-left: 10px;
+}
+
+.not-compatible {
+  /* margin: auto; */
+  width: 200px;
+  height: 100px;
+  text-align: center;
+  flex-direction: column;
+  display: flex;
+  padding: 60px;
+  justify-content: center;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.close-incompatible {
+  left: 90%;
+  color: black;
+  position: absolute;
+  margin-left: auto;
+  margin-right: auto;
+  top: 1%;
+  z-index: 4;
+  cursor: pointer;
+  font-size: 20px;
 }

@@ -20,6 +20,7 @@ import { TwitterPicker } from 'react-color'
 import { LinearProgress, Paper } from '@material-ui/core'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import Switch from '@material-ui/core/Switch'
+import Modal from '@material-ui/core/Modal'
 
 import ChromeLogo from './img/chrome.png'
 import iosLogo from './img/ios.png'
@@ -45,6 +46,8 @@ Enter NA on a new paragraph,
 
 NA`
 
+const browser = detect()
+
 function detectMob() {
   const toMatch = [
       /Android/i,
@@ -61,7 +64,21 @@ function detectMob() {
   });
 }
 
-const browser = detect()
+function detectIos() {
+  const toMatch = [
+      /iPhone/i,
+      /iPad/i,
+      /iPod/i
+  ];
+
+  return toMatch.some((toMatchItem) => {
+      return navigator.userAgent.match(toMatchItem);
+  });
+}
+
+function isCompatibleDevice () {
+  return detectIos() || browser.name === 'chrome'
+}
 
 function useInterval(callback, delay) {
   const savedCallback = useRef();
@@ -88,6 +105,8 @@ const wait = (delayInMS) => {
 }
 
 function App() {
+  const isCompatible = isCompatibleDevice()
+  const [showIncompatibleModal, setShowIncompatibleModal] = useState(true)
   const [step, setStep] = useState(-3)
   const [valid, setValid] = useState(true)
   // const [src, setSrc] = useState('')
@@ -621,6 +640,20 @@ function App() {
           <b>F<span>in</span>e <span>A</span>rt <span>Vi</span>d<span>eos</span></b>
         </div>
         {
+          step == -3 && !isCompatible && 
+          <Modal
+            open={showIncompatibleModal}
+            onClose={() => setShowIncompatibleModal(false)}
+            // aria-labelledby="simple-modal-title"
+            // aria-describedby="simple-modal-description"
+          >
+            <Paper className='not-compatible'>
+              <p className='close-incompatible' onClick={() => setShowIncompatibleModal(false)}>X</p>
+              <p>This device or browser is not supported yet.  Please open on chrome desktop or iOS device.</p>
+            </Paper>
+          </Modal>
+        }
+        {
           step === -3 && <div className='greeting'>
             {/* <Paper elevation={0}> */}
               {/* <h1>Fine Art Music Video Generator</h1> */}
@@ -842,7 +875,7 @@ function App() {
                     }
                 }
               }}
-              disabled={!valid}
+              disabled={!valid || !isCompatible}
             >
               Continue
             </Button>
