@@ -793,7 +793,7 @@ function App() {
         }
         { step === 1 &&
           <div>
-            <p>Choose an art department from the MET</p>
+            <p>Click the dropdown and choose an art department from the MET</p>
             <div className='text-field-wrapper'>
               <FormControl className='formControl'>
                 <InputLabel id="demo-simple-select-label">Department</InputLabel>
@@ -814,7 +814,7 @@ function App() {
         }
         { step === 2 &&
           <div>
-            <p>Enter a search string</p>
+            <p>Enter a single word search string to get related art for your video</p>
             <div className='text-field-wrapper'>
               <TextField color='primary' id="standard-basic" label="Search string" onChange={handleSearchStringOnChange}/>
             </div>
