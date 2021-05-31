@@ -814,7 +814,8 @@ function App() {
         }
         { step === 2 &&
           <div>
-            <p>Enter a single word search string to get related art for your video</p>
+            <p>Enter a single word search string to get related art for your video.</p>
+            <p>Some examples: "Modernist", "Impressionist", "Abstract", "Expressionist", "Surreal".</p>
             <div className='text-field-wrapper'>
               <TextField color='primary' id="standard-basic" label="Search string" onChange={handleSearchStringOnChange}/>
             </div>
@@ -828,7 +829,7 @@ function App() {
             {
               valid && <>
                 <p>Video ready.  Click continue!</p>
-                <p>If you are on a desktop browser, you will be prompted to share your screen.</p>
+                <p>If you are on a desktop Chrome browser, you will be prompted to share your screen.</p>
                 <p>This will record the video and audio and allow you to download at the end.</p>
                 <p>Select your browser tab and select "share audio".</p>
                 <p>If you don't want the download, just click cancel.</p>
