@@ -690,6 +690,7 @@ function App() {
         }
         { step === -2 && !hideLyrics &&
           <div>
+            <p>This app only works with constant tempo, 4/4 songs.</p>
             <p>Enter your lyrics.  Separate lyrics with commas and new lines, and new paragraphs for each 4 bars.  If there are no lyrics for the four bars, enter NA.</p>
             <TextareaAutosize
               rowsMax={12}
