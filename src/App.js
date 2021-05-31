@@ -815,7 +815,7 @@ function App() {
         { step === 2 &&
           <div>
             <p>Enter a single word search string to get related art for your video.</p>
-            <p>Some examples: "Modernist", "Impressionist", "Abstract", "Expressionist", "Surreal".</p>
+            <p>Some examples: "Modernist", "Impressionist", "Abstract", "Expressionist".</p>
             <div className='text-field-wrapper'>
               <TextField color='primary' id="standard-basic" label="Search string" onChange={handleSearchStringOnChange}/>
             </div>
