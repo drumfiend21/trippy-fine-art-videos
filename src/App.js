@@ -795,6 +795,7 @@ function App() {
         { step === 1 &&
           <div>
             <p>Click the dropdown and choose an art department from the MET</p>
+            <p>Note: currently only "ALL DEPARTMENTS" is supported.</p>
             <div className='text-field-wrapper'>
               <FormControl className='formControl'>
                 <InputLabel id="demo-simple-select-label">Department</InputLabel>
