@@ -410,7 +410,7 @@ canvas {
 .container-paper {
   /* background: #112 url(//images.weserv.nl/?url=i.imgur.com/6QJjYMe.jpg)  center no-repeat; */
   background-size:cover;
-  background: #112 url(//tinyurl.com/3kf3h8r3) center no-repeat;
+  background: #112 url(//tinyurl.com/3kf3h8r3) center;
   /* margin:0 */
 }
 .logo {
