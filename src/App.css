@@ -408,8 +408,9 @@ canvas {
 @import url(//fonts.googleapis.com/css?family=Vibur);
 
 .container-paper {
-  background: #112 url(//images.weserv.nl/?url=i.imgur.com/6QJjYMe.jpg)  center no-repeat;
+  /* background: #112 url(//images.weserv.nl/?url=i.imgur.com/6QJjYMe.jpg)  center no-repeat; */
   background-size:cover;
+  background: #112 url('./img/brick-wall.jpeg')  center no-repeat;
   /* margin:0 */
 }
 .logo {
